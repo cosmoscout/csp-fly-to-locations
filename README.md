@@ -1,6 +1,6 @@
 # Fly-To-Locations for CosmoScout VR
 
-A CosmoScout VR plugin which adds several quick travel targets to the sidebar. This plugin is built as part of CosmoScout's build process. See the [main repository](https://github.com/cosmoscout/cosmoscout-vr) for instructions.
+A CosmoScout VR plugin which adds several quick travel targets to the sidebar. It supports shortcuts to celestial bodies and to specific geographic locations on those bodies. This plugin is built as part of CosmoScout's build process. See the [main repository](https://github.com/cosmoscout/cosmoscout-vr) for instructions.
 
 ## Configuration
 
