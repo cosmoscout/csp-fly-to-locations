@@ -15,8 +15,6 @@ add_library(csp-fly-to-locations SHARED
 target_link_libraries(csp-fly-to-locations
   PUBLIC
     cs-core
-    cs-gui
-    cs-scene
 )
 
 # install plugin -----------------------------------------------------------------------------------
