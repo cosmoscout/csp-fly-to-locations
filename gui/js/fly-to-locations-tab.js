@@ -37,7 +37,7 @@ function add_location(group, text) {
                 ${text}
             </div>
             <div class='col-4'>
-                <a class='ripple btn glass block' data-toggle="tooltip" title='Fly to ${text}' onclick='window.call_native("fly_to", "${text}")'>
+                <a class='ripple btn glass block fly-to' data-toggle="tooltip" title='Fly to ${text}' onclick='window.call_native("fly_to", "${text}")'>
                     <i class='material-icons'>send</i>
                 </a>
             </div>
@@ -53,7 +53,7 @@ function add_celestial_body(name, icon) {
     area.append(`<div class='col-3 center'>
                     <label>
                         <input id='set_body_${name}' type='radio' name='celestial-body' />
-                        <div class='ripple block btn glass'>
+                        <div class='ripple block btn glass fly-to-planet'>
                             <img style='pointer-events: none' src='../icons/${icon}' height='80' width='80'>${name}</div>
                     </label>
                 </div>`);
