@@ -18,7 +18,7 @@ function add_location(group, text) {
     if (groupTab.length === 0) {
         const active = first ? "active" : "";
         locationsTab.append(`
-            <a class="ripple nav-item nav-link ${active} col-3" id="nav-${group}-tab" data-toggle="tab" href="#nav-${group}" 
+            <a class="nav-item nav-link ${active} col-4" id="nav-${group}-tab" data-toggle="tab" href="#nav-${group}" 
                 role="tab" aria-controls="nav-${group}" aria-selected="${first}">${group}</a>
         `);
 
@@ -37,7 +37,7 @@ function add_location(group, text) {
                 ${text}
             </div>
             <div class='col-4'>
-                <a class='ripple btn glass block fly-to' data-toggle="tooltip" title='Fly to ${text}' onclick='window.call_native("fly_to", "${text}")'>
+                <a class='btn glass block fly-to' data-toggle="tooltip" title='Fly to ${text}' onclick='window.call_native("fly_to", "${text}")'>
                     <i class='material-icons'>send</i>
                 </a>
             </div>
@@ -50,12 +50,11 @@ function add_location(group, text) {
 
 function add_celestial_body(name, icon) {
     const area = $('#celestial-bodies');
-    area.append(`<div class='col-3 center'>
-                    <label>
-                        <input id='set_body_${name}' type='radio' name='celestial-body' />
-                        <div class='ripple block btn glass fly-to-planet'>
-                            <img style='pointer-events: none' src='../icons/${icon}' height='80' width='80'>${name}</div>
-                    </label>
+    area.append(`<div class='col-3 center' style='padding: 3px'>
+                    <a class='block btn glass' id='set_body_${name}'>
+                        <img style='pointer-events: none' src='../icons/${icon}' height='80' width='80'>
+                        ${name}
+                    </a>
                 </div>`);
 
     $('#set_body_' + name).on('click', function () {
