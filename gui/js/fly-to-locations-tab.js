@@ -44,7 +44,7 @@ function add_location(group, text) {
         </div>
     `);
 
-    $('[data-toggle="tooltip"]').tooltip({delay: 500, placement: "auto", html: false});
+    $('[data-toggle="tooltip"]').tooltip({ delay: 500, placement: "auto", html: false });
 }
 
 
