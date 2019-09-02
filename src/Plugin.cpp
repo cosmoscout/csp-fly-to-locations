@@ -54,14 +54,8 @@ void from_json(const nlohmann::json& j, Plugin::Settings::Target& o) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void from_json(const nlohmann::json& j, Plugin::Settings& o) {
-  try {
-    cs::core::parseSettingsSection("csp-atmospheres.targets", [&] {
-      o.mTargets = j.at("targets").get<std::map<std::string, Plugin::Settings::Target>>();
-    });
-  } catch (std::exception const& e) {
-    std::cerr << e.what() << std::endl;
-    throw e;
-  }
+  cs::core::parseSettingsSection("csp-atmospheres.targets",
+      [&] { o.mTargets = j.at("targets").get<std::map<std::string, Plugin::Settings::Target>>(); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
