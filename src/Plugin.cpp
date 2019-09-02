@@ -45,17 +45,16 @@ void from_json(const nlohmann::json& j, Plugin::Settings::Target& o) {
 
   auto iter = j.find("locations");
   if (iter != j.end()) {
-    cs::core::parseSettingsSection("locations", [&] {
-      o.mLocations = j.at("locations").get<std::map<std::string, Plugin::Settings::Location>>();
-    });
+    o.mLocations = cs::core::parseMap<std::string, Plugin::Settings::Location>("locations", j);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void from_json(const nlohmann::json& j, Plugin::Settings& o) {
-  cs::core::parseSettingsSection("csp-atmospheres.targets",
-      [&] { o.mTargets = j.at("targets").get<std::map<std::string, Plugin::Settings::Target>>(); });
+  cs::core::parseSection("csp-atmospheres", [&] {
+    o.mTargets = cs::core::parseMap<std::string, Plugin::Settings::Target>("targets", j);
+  });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
