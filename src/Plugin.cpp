@@ -32,27 +32,36 @@ namespace csp::flytolocations {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void from_json(const nlohmann::json& j, Plugin::Settings::Location& o) {
-  o.mLatitude  = j.at("latitude").get<double>();
-  o.mLongitude = j.at("longitude").get<double>();
-  o.mExtent    = j.at("extent").get<double>();
-  o.mGroup     = j.at("group").get<std::string>();
+  o.mLatitude  = cs::core::parseProperty<double>("latitude", j);
+  o.mLongitude = cs::core::parseProperty<double>("longitude", j);
+  o.mExtent    = cs::core::parseProperty<double>("extent", j);
+  o.mGroup     = cs::core::parseProperty<std::string>("group", j);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void from_json(const nlohmann::json& j, Plugin::Settings::Target& o) {
-  o.mIcon = j.at("icon").get<std::string>();
+  o.mIcon = cs::core::parseProperty<std::string>("icon", j);
 
   auto iter = j.find("locations");
   if (iter != j.end()) {
-    o.mLocations = j.at("locations").get<std::map<std::string, Plugin::Settings::Location>>();
+    cs::core::parseSettingsSection("locations", [&] {
+      o.mLocations = j.at("locations").get<std::map<std::string, Plugin::Settings::Location>>();
+    });
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void from_json(const nlohmann::json& j, Plugin::Settings& o) {
-  o.mTargets = j.at("targets").get<std::map<std::string, Plugin::Settings::Target>>();
+  try {
+    cs::core::parseSettingsSection("csp-atmospheres.targets", [&] {
+      o.mTargets = j.at("targets").get<std::map<std::string, Plugin::Settings::Target>>();
+    });
+  } catch (std::exception const& e) {
+    std::cerr << e.what() << std::endl;
+    throw e;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
