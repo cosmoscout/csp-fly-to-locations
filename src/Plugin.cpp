@@ -9,8 +9,6 @@
 #include "../../../src/cs-core/GuiManager.hpp"
 #include "../../../src/cs-core/InputManager.hpp"
 #include "../../../src/cs-core/SolarSystem.hpp"
-#include "../../../src/cs-gui/GuiArea.hpp"
-#include "../../../src/cs-gui/GuiItem.hpp"
 #include "../../../src/cs-utils/convert.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,27 +30,29 @@ namespace csp::flytolocations {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void from_json(const nlohmann::json& j, Plugin::Settings::Location& o) {
-  o.mLatitude  = j.at("latitude").get<double>();
-  o.mLongitude = j.at("longitude").get<double>();
-  o.mExtent    = j.at("extent").get<double>();
-  o.mGroup     = j.at("group").get<std::string>();
+  o.mLatitude  = cs::core::parseProperty<double>("latitude", j);
+  o.mLongitude = cs::core::parseProperty<double>("longitude", j);
+  o.mExtent    = cs::core::parseProperty<double>("extent", j);
+  o.mGroup     = cs::core::parseProperty<std::string>("group", j);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void from_json(const nlohmann::json& j, Plugin::Settings::Target& o) {
-  o.mIcon = j.at("icon").get<std::string>();
+  o.mIcon = cs::core::parseProperty<std::string>("icon", j);
 
   auto iter = j.find("locations");
   if (iter != j.end()) {
-    o.mLocations = j.at("locations").get<std::map<std::string, Plugin::Settings::Location>>();
+    o.mLocations = cs::core::parseMap<std::string, Plugin::Settings::Location>("locations", j);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void from_json(const nlohmann::json& j, Plugin::Settings& o) {
-  o.mTargets = j.at("targets").get<std::map<std::string, Plugin::Settings::Target>>();
+  cs::core::parseSection("csp-atmospheres", [&] {
+    o.mTargets = cs::core::parseMap<std::string, Plugin::Settings::Target>("targets", j);
+  });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
