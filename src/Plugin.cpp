@@ -81,8 +81,8 @@ void Plugin::init() {
 
   mSolarSystem->pActiveBody.onChange().connect(
       [this](std::shared_ptr<cs::scene::CelestialBody> const& body) {
-        mGuiManager->getFooterBar()->callJavascript(
-            "set_active_planet", body->getCenterName(), body->getFrameName());
+        mGuiManager->getTimeNavigationBar()->callJavascript(
+            "set_active_planet", body->getCenterName());
 
         mGuiManager->getSideBar()->callJavascript("clear_container", "location-tabs-area");
 
