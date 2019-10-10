@@ -115,6 +115,7 @@ void Plugin::init() {
               mSolarSystem->flyObserverTo(mSolarSystem->pActiveBody.get()->getCenterName(),
                   mSolarSystem->pActiveBody.get()->getFrameName(), lngLat,
                   location->second.mExtent + height, 5.0);
+              mGuiManager->showNotification("Travelling", "to " + location->first, "send");
             }
           }
         }
