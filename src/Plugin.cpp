@@ -76,14 +76,14 @@ void Plugin::init() {
     }
 
     mGuiManager->getSideBar()->callJavascript(
-        "add_celestial_body", anchor->second.mCenter, settings.second.mIcon);
+            "CosmoScout.call", "sidebar", "addCelestialBody", anchor->second.mCenter, settings.second.mIcon);
   }
 
   mSolarSystem->pActiveBody.onChange().connect(
       [this](std::shared_ptr<cs::scene::CelestialBody> const& body) {
-        mGuiManager->getTimeline()->callJavascript("set_active_planet", body->getCenterName());
+        mGuiManager->getTimeline()->callJavascript("CosmoScout.call", "timeline", "setActivePlanet", body->getCenterName());
 
-        mGuiManager->getSideBar()->callJavascript("clear_container", "location-tabs-area");
+        mGuiManager->getSideBar()->callJavascript("CosmoScout.call", "sidebar", "clearContainer", "location-tabs-area");
 
         auto const& planet =
             mPluginSettings.mTargets.find(mSolarSystem->pActiveBody.get()->getCenterName());
@@ -92,7 +92,7 @@ void Plugin::init() {
           auto const& locations = planet->second.mLocations;
 
           for (auto loc : locations) {
-            mGuiManager->getSideBar()->callJavascript("add_location", loc.second.mGroup, loc.first);
+            mGuiManager->getSideBar()->callJavascript("CosmoScout.call", "sidebar", "addLocation", loc.second.mGroup, loc.first);
           }
         }
       });
