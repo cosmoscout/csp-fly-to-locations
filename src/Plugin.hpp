@@ -51,6 +51,8 @@ class Plugin : public cs::core::PluginBase {
 
  private:
   Settings mPluginSettings;
+
+  int mActiveBodyConnection = -1;
 };
 
 } // namespace csp::flytolocations

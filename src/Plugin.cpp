@@ -79,7 +79,7 @@ void Plugin::init() {
         "add_celestial_body", anchor->second.mCenter, settings.second.mIcon);
   }
 
-  mSolarSystem->pActiveBody.onChange().connect(
+  mActiveBodyConnection = mSolarSystem->pActiveBody.onChange().connect(
       [this](std::shared_ptr<cs::scene::CelestialBody> const& body) {
         mGuiManager->getTimeline()->callJavascript("set_active_planet", body->getCenterName());
 
@@ -125,6 +125,7 @@ void Plugin::init() {
 
 void Plugin::deInit() {
   mGuiManager->getSideBar()->unregisterCallback("fly_to");
+  mSolarSystem->pActiveBody.onChange().disconnect(mActiveBodyConnection);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
