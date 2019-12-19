@@ -65,8 +65,6 @@ void Plugin::init() {
   mGuiManager->addPluginTabToSideBarFromHTML(
       "Navigation", "location_on", "../share/resources/gui/fly-to-locations-tab.html");
 
-  mGuiManager->addScriptToSideBarFromJS("../share/resources/gui/js/fly-to-locations-tab.js");
-
   for (auto const& settings : mPluginSettings.mTargets) {
     auto anchor = mAllSettings->mAnchors.find(settings.first);
 
@@ -75,15 +73,15 @@ void Plugin::init() {
           "There is no Anchor \"" + settings.first + "\" defined in the settings.");
     }
 
-    mGuiManager->getSideBar()->callJavascript(
+    mGuiManager->getGui()->callJavascript(
             "CosmoScout.call", "sidebar", "addCelestialBody", anchor->second.mCenter, settings.second.mIcon);
   }
 
   mSolarSystem->pActiveBody.onChange().connect(
       [this](std::shared_ptr<cs::scene::CelestialBody> const& body) {
-        mGuiManager->getTimeline()->callJavascript("CosmoScout.call", "timeline", "setActivePlanet", body->getCenterName());
+        mGuiManager->getGui()->callJavascript("CosmoScout.call", "timeline", "setActivePlanet", body->getCenterName());
 
-        mGuiManager->getSideBar()->callJavascript("CosmoScout.call", "sidebar", "clearContainer", "location-tabs-area");
+        mGuiManager->getGui()->callJavascript("CosmoScout.call", "sidebar", "clearContainer", "location-tabs-area");
 
         auto const& planet =
             mPluginSettings.mTargets.find(mSolarSystem->pActiveBody.get()->getCenterName());
@@ -92,12 +90,12 @@ void Plugin::init() {
           auto const& locations = planet->second.mLocations;
 
           for (auto loc : locations) {
-            mGuiManager->getSideBar()->callJavascript("CosmoScout.call", "sidebar", "addLocation", loc.second.mGroup, loc.first);
+            mGuiManager->getGui()->callJavascript("CosmoScout.call", "sidebar", "addLocation", loc.second.mGroup, loc.first);
           }
         }
       });
 
-  mGuiManager->getSideBar()->registerCallback<std::string>(
+  mGuiManager->getGui()->registerCallback<std::string>(
       "fly_to", [this](std::string const& name) {
         if (!mSolarSystem->pActiveBody.get()) {
           return;
@@ -124,7 +122,7 @@ void Plugin::init() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Plugin::deInit() {
-  mGuiManager->getSideBar()->unregisterCallback("fly_to");
+  mGuiManager->getGui()->unregisterCallback("fly_to");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
