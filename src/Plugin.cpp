@@ -77,7 +77,7 @@ void Plugin::init() {
         anchor->second.mCenter, settings.second.mIcon);
   }
 
-  mSolarSystem->pActiveBody.onChange().connect(
+  mActiveBodyConnection = mSolarSystem->pActiveBody.onChange().connect(
       [this](std::shared_ptr<cs::scene::CelestialBody> const& body) {
         mGuiManager->getGui()->callJavascript(
             "CosmoScout.call", "timeline", "setActivePlanet", body->getCenterName());
@@ -125,6 +125,7 @@ void Plugin::init() {
 
 void Plugin::deInit() {
   mGuiManager->getGui()->unregisterCallback("fly_to");
+  mSolarSystem->pActiveBody.onChange().disconnect(mActiveBodyConnection);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
