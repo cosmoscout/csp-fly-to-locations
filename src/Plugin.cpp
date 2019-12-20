@@ -62,6 +62,11 @@ void Plugin::init() {
 
   mPluginSettings = mAllSettings->mPlugins.at("csp-fly-to-locations");
 
+  mGuiManager->addHtmlToGui(
+      "fly-to-locations", "../share/resources/gui/fly-to-locations-templates.html");
+
+  mGuiManager->addScriptToSideBarFromJS("../share/resources/gui/js/flyto.js");
+
   mGuiManager->addPluginTabToSideBarFromHTML(
       "Navigation", "location_on", "../share/resources/gui/fly-to-locations-tab.html");
 
@@ -73,7 +78,7 @@ void Plugin::init() {
           "There is no Anchor \"" + settings.first + "\" defined in the settings.");
     }
 
-    mGuiManager->getGui()->callJavascript("CosmoScout.call", "sidebar", "addCelestialBody",
+    mGuiManager->getGui()->callJavascript("CosmoScout.call", "flyto", "addCelestialBody",
         anchor->second.mCenter, settings.second.mIcon);
   }
 
@@ -82,8 +87,7 @@ void Plugin::init() {
         mGuiManager->getGui()->callJavascript(
             "CosmoScout.call", "timeline", "setActivePlanet", body->getCenterName());
 
-        mGuiManager->getGui()->callJavascript(
-            "CosmoScout.call", "sidebar", "clearContainer", "location-tabs-area");
+        mGuiManager->getGui()->callJavascript("CosmoScout.clearHtml", "location-tabs-area");
 
         auto const& planet =
             mPluginSettings.mTargets.find(mSolarSystem->pActiveBody.get()->getCenterName());
@@ -93,7 +97,7 @@ void Plugin::init() {
 
           for (auto loc : locations) {
             mGuiManager->getGui()->callJavascript(
-                "CosmoScout.call", "sidebar", "addLocation", loc.second.mGroup, loc.first);
+                "CosmoScout.call", "flyto", "addLocation", loc.second.mGroup, loc.first);
           }
         }
       });
@@ -126,6 +130,7 @@ void Plugin::init() {
 void Plugin::deInit() {
   mGuiManager->getGui()->unregisterCallback("fly_to");
   mSolarSystem->pActiveBody.onChange().disconnect(mActiveBodyConnection);
+  mGuiManager->getGui()->callJavascript("CosmoScout.unregisterHtml", "fly-to-locations");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
