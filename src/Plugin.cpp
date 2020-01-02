@@ -78,14 +78,14 @@ void Plugin::init() {
           "There is no Anchor \"" + settings.first + "\" defined in the settings.");
     }
 
-    mGuiManager->getGui()->callJavascript("CosmoScout.call", "flyto", "addCelestialBody",
+    mGuiManager->getGui()->callJavascript("CosmoScout.flyto.addCelestialBody",
         anchor->second.mCenter, settings.second.mIcon);
   }
 
   mActiveBodyConnection = mSolarSystem->pActiveBody.onChange().connect(
       [this](std::shared_ptr<cs::scene::CelestialBody> const& body) {
         mGuiManager->getGui()->callJavascript(
-            "CosmoScout.call", "timeline", "setActivePlanet", body->getCenterName());
+            "CosmoScout.timeline.setActivePlanet", body->getCenterName());
 
         mGuiManager->getGui()->callJavascript("CosmoScout.clearHtml", "location-tabs-area");
 
@@ -97,7 +97,7 @@ void Plugin::init() {
 
           for (auto loc : locations) {
             mGuiManager->getGui()->callJavascript(
-                "CosmoScout.call", "flyto", "addLocation", loc.second.mGroup, loc.first);
+                "CosmoScout.flyto.addLocation", loc.second.mGroup, loc.first);
           }
         }
       });
