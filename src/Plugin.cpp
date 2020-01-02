@@ -66,6 +66,7 @@ void Plugin::init() {
       "fly-to-locations", "../share/resources/gui/fly-to-locations-templates.html");
 
   mGuiManager->addScriptToGuiFromJS("../share/resources/gui/js/flyto.js");
+  mGuiManager->addCssToGui("css/flyto.css");
 
   mGuiManager->addPluginTabToSideBarFromHTML(
       "Navigation", "location_on", "../share/resources/gui/fly-to-locations-tab.html");
@@ -131,6 +132,7 @@ void Plugin::deInit() {
   mGuiManager->getGui()->unregisterCallback("fly_to");
   mSolarSystem->pActiveBody.onChange().disconnect(mActiveBodyConnection);
   mGuiManager->getGui()->callJavascript("CosmoScout.unregisterHtml", "fly-to-locations");
+  mGuiManager->getGui()->callJavascript("CosmoScout.unregisterCss", "css/flyto.css");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
