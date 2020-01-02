@@ -65,7 +65,7 @@ void Plugin::init() {
   mGuiManager->addHtmlToGui(
       "fly-to-locations", "../share/resources/gui/fly-to-locations-templates.html");
 
-    mGuiManager->addScriptToGuiFromJS("../share/resources/gui/js/flyto.js");
+  mGuiManager->addScriptToGuiFromJS("../share/resources/gui/js/flyto.js");
 
   mGuiManager->addPluginTabToSideBarFromHTML(
       "Navigation", "location_on", "../share/resources/gui/fly-to-locations-tab.html");
@@ -78,8 +78,8 @@ void Plugin::init() {
           "There is no Anchor \"" + settings.first + "\" defined in the settings.");
     }
 
-    mGuiManager->getGui()->callJavascript("CosmoScout.flyto.addCelestialBody",
-        anchor->second.mCenter, settings.second.mIcon);
+    mGuiManager->getGui()->callJavascript(
+        "CosmoScout.flyto.addCelestialBody", anchor->second.mCenter, settings.second.mIcon);
   }
 
   mActiveBodyConnection = mSolarSystem->pActiveBody.onChange().connect(
