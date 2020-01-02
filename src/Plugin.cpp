@@ -65,7 +65,7 @@ void Plugin::init() {
   mGuiManager->addHtmlToGui(
       "fly-to-locations", "../share/resources/gui/fly-to-locations-templates.html");
 
-  mGuiManager->addScriptToSideBarFromJS("../share/resources/gui/js/flyto.js");
+    mGuiManager->addScriptToGuiFromJS("../share/resources/gui/js/flyto.js");
 
   mGuiManager->addPluginTabToSideBarFromHTML(
       "Navigation", "location_on", "../share/resources/gui/fly-to-locations-tab.html");
