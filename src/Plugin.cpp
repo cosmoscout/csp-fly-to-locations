@@ -62,10 +62,14 @@ void Plugin::init() {
 
   mPluginSettings = mAllSettings->mPlugins.at("csp-fly-to-locations");
 
+  mGuiManager->addHtmlToGui(
+      "fly-to-locations", "../share/resources/gui/fly-to-locations-templates.html");
+
+  mGuiManager->addScriptToGuiFromJS("../share/resources/gui/js/csp-fly-to-locations.js");
+  mGuiManager->addCssToGui("css/csp-fly-to-locations.css");
+
   mGuiManager->addPluginTabToSideBarFromHTML(
       "Navigation", "location_on", "../share/resources/gui/fly-to-locations-tab.html");
-
-  mGuiManager->addScriptToSideBarFromJS("../share/resources/gui/js/fly-to-locations-tab.js");
 
   for (auto const& settings : mPluginSettings.mTargets) {
     auto anchor = mAllSettings->mAnchors.find(settings.first);
@@ -75,15 +79,16 @@ void Plugin::init() {
           "There is no Anchor \"" + settings.first + "\" defined in the settings.");
     }
 
-    mGuiManager->getSideBar()->callJavascript(
-        "add_celestial_body", anchor->second.mCenter, settings.second.mIcon);
+    mGuiManager->getGui()->callJavascript(
+        "CosmoScout.flyto.addCelestialBody", anchor->second.mCenter, settings.second.mIcon);
   }
 
   mActiveBodyConnection = mSolarSystem->pActiveBody.onChange().connect(
       [this](std::shared_ptr<cs::scene::CelestialBody> const& body) {
-        mGuiManager->getTimeline()->callJavascript("set_active_planet", body->getCenterName());
+        mGuiManager->getGui()->callJavascript(
+            "CosmoScout.timeline.setActivePlanet", body->getCenterName());
 
-        mGuiManager->getSideBar()->callJavascript("clear_container", "location-tabs-area");
+        mGuiManager->getGui()->callJavascript("CosmoScout.clearHtml", "location-tabs-area");
 
         auto const& planet =
             mPluginSettings.mTargets.find(mSolarSystem->pActiveBody.get()->getCenterName());
@@ -92,40 +97,42 @@ void Plugin::init() {
           auto const& locations = planet->second.mLocations;
 
           for (auto loc : locations) {
-            mGuiManager->getSideBar()->callJavascript("add_location", loc.second.mGroup, loc.first);
+            mGuiManager->getGui()->callJavascript(
+                "CosmoScout.flyto.addLocation", loc.second.mGroup, loc.first);
           }
         }
       });
 
-  mGuiManager->getSideBar()->registerCallback<std::string>(
-      "fly_to", [this](std::string const& name) {
-        if (!mSolarSystem->pActiveBody.get()) {
-          return;
-        }
+  mGuiManager->getGui()->registerCallback<std::string>("fly_to", [this](std::string const& name) {
+    if (!mSolarSystem->pActiveBody.get()) {
+      return;
+    }
 
-        for (auto const& planet : mPluginSettings.mTargets) {
-          auto anchor = mAllSettings->mAnchors.find(planet.first);
-          if (anchor->second.mCenter == mSolarSystem->pActiveBody.get()->getCenterName()) {
-            auto const& location = planet.second.mLocations.find(name);
-            if (location != planet.second.mLocations.end()) {
-              glm::dvec2 lngLat(location->second.mLongitude, location->second.mLatitude);
-              lngLat        = cs::utils::convert::toRadians(lngLat);
-              double height = mSolarSystem->pActiveBody.get()->getHeight(lngLat);
-              mSolarSystem->flyObserverTo(mSolarSystem->pActiveBody.get()->getCenterName(),
-                  mSolarSystem->pActiveBody.get()->getFrameName(), lngLat,
-                  location->second.mExtent + height, 5.0);
-              mGuiManager->showNotification("Travelling", "to " + location->first, "send");
-            }
-          }
+    for (auto const& planet : mPluginSettings.mTargets) {
+      auto anchor = mAllSettings->mAnchors.find(planet.first);
+      if (anchor->second.mCenter == mSolarSystem->pActiveBody.get()->getCenterName()) {
+        auto const& location = planet.second.mLocations.find(name);
+        if (location != planet.second.mLocations.end()) {
+          glm::dvec2 lngLat(location->second.mLongitude, location->second.mLatitude);
+          lngLat        = cs::utils::convert::toRadians(lngLat);
+          double height = mSolarSystem->pActiveBody.get()->getHeight(lngLat);
+          mSolarSystem->flyObserverTo(mSolarSystem->pActiveBody.get()->getCenterName(),
+              mSolarSystem->pActiveBody.get()->getFrameName(), lngLat,
+              location->second.mExtent + height, 5.0);
+          mGuiManager->showNotification("Travelling", "to " + location->first, "send");
         }
-      });
+      }
+    }
+  });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Plugin::deInit() {
-  mGuiManager->getSideBar()->unregisterCallback("fly_to");
+  mGuiManager->getGui()->unregisterCallback("fly_to");
   mSolarSystem->pActiveBody.onChange().disconnect(mActiveBodyConnection);
+  mGuiManager->getGui()->callJavascript("CosmoScout.unregisterHtml", "fly-to-locations");
+  mGuiManager->getGui()->callJavascript("CosmoScout.unregisterCss", "css/csp-fly-to-locations.css");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
