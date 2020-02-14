@@ -5,3 +5,8 @@
 .celestial-body-button img {
     pointer-events: none;
 }
+
+#minimap {
+    background-color: red;
+    height: 300px;
+}

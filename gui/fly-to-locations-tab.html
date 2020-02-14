@@ -1,5 +1,40 @@
-<div id="celestial-bodies" class="row">
+<nav>
+    <div class="row nav nav-tabs" id="navigation-tabs" role="tablist">
+        <a class="nav-item nav-link active col-6"
+            id="nav-celestial-bodies"
+            data-toggle="tab"
+            href="#tab-celestial-bodies"
+            role="tab"
+            aria-controls="tab-celestial-bodies"
+            aria-selected="true">
+                Celestial Bodies
+        </a>
+        <a class="nav-item nav-link col-4"
+            id="nav-minimap"
+            data-toggle="tab"
+            href="#tab-minimap"
+            role="tab"
+            aria-controls="tab-minimap"
+            aria-selected="false">
+                Minimap
+        </a>
+    </div>
+</nav>
+<div class="tab-content">
+    <div id="tab-celestial-bodies" 
+         class="tab-pane fade show active"
+         role="tabpanel"
+         aria-labelledby="nav-celestial-bodies">
+        <div id="celestial-bodies" class="row"></div>
+    </div>
+    <div id="tab-minimap" 
+         class="tab-pane fade"
+         role="tabpanel"
+         aria-labelledby="nav-minimap">
+        <div id="minimap" class="row">Minimap</div>
+    </div>
 </div>
+
 
 <div id="location-tabs-area">
 </div>
