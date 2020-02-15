@@ -1,0 +1,7 @@
+.celestial-body-button {
+    padding: 3px
+}
+
+.celestial-body-button img {
+    pointer-events: none;
+}
