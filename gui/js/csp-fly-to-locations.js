@@ -16,7 +16,7 @@ class FlyToApi extends IApi {
 // The active planet.
   activePlanet = null;
  // The circumfence of the planet.
-  circumfencevar = 0;
+  circumferencevar = 0;
 
   // Store last frame's observer position.
   lastLong = 0.0;
@@ -37,7 +37,7 @@ class FlyToApi extends IApi {
           [-90, -180],
           [90, 180]
       ]});
-      configureMinimap(mapserver, layer, circumfence);{
+      configureMinimap(mapserver, layer, circumference);{
         if (this.wmslayer == null) {
           this.wmslayer = L.tileLayer.wms(mapserver, {layers: layer}).addTo(this.minimap);
         } else {
@@ -47,14 +47,14 @@ class FlyToApi extends IApi {
           });
         }
         // Change the circumfence.
-        this.circumfencevar = circumfence;
+        this.circumferencevar = circumference;
       }
     // Moving the planet with the minimap.
     this.minimap.on('click', (e) => {
       var location = { 
         longitude: parseFloat(e.latlng.lng),
         latitude: parseFloat(e.latlng.lat),
-        height: parseFloat(this.circumfencevar/ Math.pow(2, this.minimap.getZoom() 
+        height: parseFloat(this.circumferencevar/ Math.pow(2, this.minimap.getZoom() 
       ))};
       this.flyTo(this.activePlanet, location, 5);
     });   

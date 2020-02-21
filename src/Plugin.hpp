@@ -41,7 +41,7 @@ class Plugin : public cs::core::PluginBase {
     struct Minimap {
       std::string mMapServer;
       std::string mLayer;
-      double      mCircumfence;
+      double      mCircumference;
     };
 
     /// Settings for a single target.
@@ -53,6 +53,8 @@ class Plugin : public cs::core::PluginBase {
 
     std::map<std::string, Target> mTargets;
   };
+
+  Plugin();
 
   void init() override;
   void deInit() override;
