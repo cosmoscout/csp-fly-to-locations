@@ -48,7 +48,7 @@ class FlyToApi extends IApi {
     // Moving the planet with the minimap.
     this.minimap.on('click', (e) => {
       var location = { 
-        longitude: parseFloat(e.latlng.lng) ,
+        longitude: parseFloat(e.latlng.lng),
         latitude: parseFloat(e.latlng.lat),
         height: parseFloat(this.circumfencevar/ Math.pow(2, this.minimap.getZoom() 
       ))};
