@@ -116,7 +116,8 @@ class FlyToApi extends IApi {
 
     area.appendChild(button);
   }
-// Hide and show the minimap.
+
+ // Hide and show the minimap.
   enableMinimap(enable) {
     if (enable) {
       document.getElementById ('navi').classList.remove('hidden')
