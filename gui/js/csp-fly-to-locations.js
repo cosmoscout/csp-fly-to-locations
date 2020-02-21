@@ -65,7 +65,7 @@ class FlyToApi extends IApi {
       var location = { 
         longitude: parseFloat(e.latlng.lng),
         latitude: parseFloat(e.latlng.lat),
-        height: parseFloat(this.circumfencevar/ Math.pow(2, this.minimap.getZoom() 
+        height: parseFloat(this.circumferencevar/ Math.pow(2, this.minimap.getZoom() 
       ))};
       this.flyTo(this.activePlanet, location, 5);
     });   
