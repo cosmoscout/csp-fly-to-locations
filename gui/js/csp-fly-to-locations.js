@@ -57,7 +57,7 @@ class FlyToApi extends IApi {
   } 
    // Reset the minimap to the center.
   reset() {
-    this.minimap.setView([0,0],[1])
+    this.minimap.setView([0,0], 1)
   }
 
   flyTo(planet, location, time) {
