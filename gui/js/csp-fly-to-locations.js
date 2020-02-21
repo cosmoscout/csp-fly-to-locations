@@ -130,7 +130,6 @@ class FlyToApi extends IApi {
       document.getElementById ('tab-celestial-bodies').classList.add('active')
       document.getElementById ('tab-celestial-bodies').classList.add('show')
     }
-
   }
 
   // Update the map server and layer for the minimap.
