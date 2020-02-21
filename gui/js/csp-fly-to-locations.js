@@ -19,7 +19,7 @@ class FlyToApi extends IApi {
   activePlanet = null;
 
  // The circumfence of the planet.
-  circumfencevar =0;
+  circumfencevar = 0;
 
   // Store last frame's observer position.
   lastLong = 0.0;
