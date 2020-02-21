@@ -97,9 +97,6 @@ void Plugin::init() {
         mGuiManager->getGui()->callJavascript("CosmoScout.clearHtml", "location-tabs-area");
 
         if (body) {
-          mGuiManager->getGui()->callJavascript(
-              "CosmoScout.timeline.setActivePlanet", body->getCenterName());
-
           auto const& planet = mPluginSettings.mTargets.find(body->getCenterName());
 
           if (planet != mPluginSettings.mTargets.end()) {
