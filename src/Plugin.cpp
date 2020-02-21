@@ -10,6 +10,7 @@
 #include "../../../src/cs-core/InputManager.hpp"
 #include "../../../src/cs-core/SolarSystem.hpp"
 #include "../../../src/cs-utils/convert.hpp"
+#include "../../../src/cs-utils/logger.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -67,8 +68,16 @@ void from_json(const nlohmann::json& j, Plugin::Settings& o) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+Plugin::Plugin() {
+  // Create default logger for this plugin.
+  spdlog::set_default_logger(cs::utils::logger::createLogger("csp-fly-to-locations"));
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void Plugin::init() {
-  std::cout << "Loading: CosmoScout VR Plugin Fly to Locations" << std::endl;
+
+  spdlog::info("Loading plugin...");
 
   mPluginSettings = mAllSettings->mPlugins.at("csp-fly-to-locations");
 
@@ -103,12 +112,6 @@ void Plugin::init() {
         bool enableMinimap = false;
 
         if (body) {
-          mGuiManager->getGui()->callJavascript(
-              "CosmoScout.timeline.setActivePlanet", body->getCenterName());
-
-          mGuiManager->getGui()->callJavascript(
-              "CosmoScout.flyto.setActivePlanet", body->getCenterName());
-
           auto const& planet = mPluginSettings.mTargets.find(body->getCenterName());
 
           if (planet != mPluginSettings.mTargets.end()) {
@@ -152,15 +155,21 @@ void Plugin::init() {
       }
     }
   });
+
+  spdlog::info("Loading done.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Plugin::deInit() {
+  spdlog::info("Unloading plugin...");
+
   mGuiManager->getGui()->unregisterCallback("fly_to");
   mSolarSystem->pActiveBody.onChange().disconnect(mActiveBodyConnection);
   mGuiManager->getGui()->callJavascript("CosmoScout.unregisterHtml", "fly-to-locations");
   mGuiManager->getGui()->callJavascript("CosmoScout.unregisterCss", "css/csp-fly-to-locations.css");
+
+  spdlog::info("Unloading done.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
