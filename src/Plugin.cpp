@@ -119,7 +119,7 @@ void Plugin::init() {
             if (planet->second.mMinimap) {
               enableMinimap = true;
               mGuiManager->getGui()->callJavascript(
-                  "CosmoScout.flyto.configureMinimap", planet->second.mMinimap->mMapServer, planet->second.mMinimap->mLayer, planet->second.mMinimap->mCircumfence);
+                  "CosmoScout.flyto.configureMinimap", planet->second.mMinimap->mMapServer, planet->second.mMinimap->mLayer, planet->second.mMinimap->mCircumference);
             }
 
             auto const& locations = planet->second.mLocations;
