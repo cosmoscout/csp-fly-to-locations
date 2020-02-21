@@ -32,7 +32,7 @@ class FlyToApi extends IApi {
     this.minimap = L.map(document.getElementById('minimap'), {
         center: [52.315625,10.562169],
         zoom: 3,
-        worldCopyJump:true,
+        worldCopyJump: true,
         maxBoundsViscosity: 0.5,
         maxBounds:[
           [-90, -180],
