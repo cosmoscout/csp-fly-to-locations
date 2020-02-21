@@ -9,14 +9,14 @@ class FlyToApi extends IApi {
    * @type {string}
    */
   name = 'flyto';
-// Var for the minimap.
+// Variables for the minimap.
   wmslayer = null;
   minimap = null;
   marker = null;
-// Say the active planet.
+// The active planet.
   activePlanet = null;
-// Say the circumfence of the planet.
-  circumfencevar =0;
+// The circumfence of the planet.
+  circumfencevar = 0;
 
   // Store last frame's observer position.
   lastLong = 0.0;
@@ -27,34 +27,42 @@ class FlyToApi extends IApi {
    * @inheritDoc
    */
   init() {
-    // Show the minimap and make a invisible border.
+    // Show the minimap and make an invisible border.
     this.minimap = L.map(document.getElementById('minimap'), {
-        center: [52.315625,10.562169],
+        center: [52.315625, 10.562169],
         zoom: 3,
-        worldCopyJump:true,
+        worldCopyJump: true,
         maxBoundsViscosity: 0.5,
         maxBounds:[
           [-90, -180],
           [90, 180]
       ]});
-    this.wmslayer= L.tileLayer.wms('http://maps.sc.bs.dlr.de/mapserv?', {
-      layers: 'earth.bluemarble.rgb'
-    }).addTo(this.minimap);
-    this.marker = L.marker([50.5, 30.5]).addTo(this.minimap);
-
+      configureMinimap(mapserver, layer, circumfence);{
+        if (this.wmslayer == null) {
+          this.wmslayer = L.tileLayer.wms(mapserver, {layers: layer}).addTo(this.minimap);
+        } else {
+          this.wmslayer.setParams({
+            "baseUrl": mapserver,
+            "layers": layer
+          });
+        }
+        // Change the circumfence.
+        this.circumfencevar = circumfence;
+      }
     // Moving the planet with the minimap.
     this.minimap.on('click', (e) => {
       var location = { 
-        longitude: parseFloat(e.latlng.lng) ,
+        longitude: parseFloat(e.latlng.lng),
         latitude: parseFloat(e.latlng.lat),
         height: parseFloat(this.circumfencevar/ Math.pow(2, this.minimap.getZoom() 
       ))};
       this.flyTo(this.activePlanet, location, 5);
     });   
   } 
+  
    // Reset the minimap to the center.
   reset() {
-    this.minimap.setView([0,0],[1])
+    this.minimap.setView([0,0], 1)
   }
 
   flyTo(planet, location, time) {
@@ -127,15 +135,6 @@ class FlyToApi extends IApi {
       document.getElementById ('tab-celestial-bodies').classList.add('show')
     }
 
-  }
- // Change the layerfor the minimap.
-  configureMinimap(mapserver, layer, circumfence) {
-    this.wmslayer.setParams({
-      "baseUrl": mapserver,
-      "layers": layer
-    });
-    // Change the circumfence.
-    this.circumfencevar = circumfence;
   }
 
   /**
