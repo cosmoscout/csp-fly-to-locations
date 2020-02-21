@@ -42,7 +42,7 @@ void from_json(const nlohmann::json& j, Plugin::Settings::Location& o) {
 void from_json(const nlohmann::json& j, Plugin::Settings::Minimap& o) {
   o.mMapServer   = cs::core::parseProperty<std::string>("mapserver", j);
   o.mLayer       = cs::core::parseProperty<std::string>("layer", j);
-  o.mCircumfence = cs::core::parseProperty<double>("circumfence", j);
+  o.mCircumference = cs::core::parseProperty<double>("circumference", j);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
