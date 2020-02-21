@@ -9,7 +9,8 @@ class FlyToApi extends IApi {
    * @type {string}
    */
   name = 'flyto';
-// Var for the minimap.
+ 
+ // Variables for the minimap.
   wmslayer = null;
   minimap = null;
   marker = null;
