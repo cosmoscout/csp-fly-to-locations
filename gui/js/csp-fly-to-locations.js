@@ -48,7 +48,7 @@ class FlyToApi extends IApi {
           [-90, -180],
           [90, 180]
       ]});
-      configureMinimap(mapserver, layer, circumfence);{
+      configureMinimap(mapserver, layer, circumference);{
         if (this.wmslayer == null) {
           this.wmslayer = L.tileLayer.wms(mapserver, {layers: layer}).addTo(this.minimap);
         } else {
