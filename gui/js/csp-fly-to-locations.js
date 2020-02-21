@@ -15,17 +15,6 @@ class FlyToApi extends IApi {
   marker = null;
 // The active planet.
   activePlanet = null;
-// The circumfence of the planet.
-
- 
- // Variables for the minimap.
-  wmslayer = null;
-  minimap = null;
-  marker = null;
-
- // The active planet.
-  activePlanet = null;
-
  // The circumfence of the planet.
   circumfencevar = 0;
 
