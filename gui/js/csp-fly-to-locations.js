@@ -58,7 +58,7 @@ class FlyToApi extends IApi {
           });
         }
         // Change the circumfence.
-        this.circumfencevar = circumfence;
+        this.circumferencevar = circumference;
       }
     // Moving the planet with the minimap.
     this.minimap.on('click', (e) => {
