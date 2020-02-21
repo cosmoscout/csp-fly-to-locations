@@ -1,4 +1,4 @@
-<nav>
+<nav id="navi" class="hidden">
     <div class="row nav nav-tabs" id="navigation-tabs" role="tablist">
         <a class="nav-item nav-link active col-6"
             id="nav-celestial-bodies"
@@ -31,7 +31,19 @@
          class="tab-pane fade"
          role="tabpanel"
          aria-labelledby="nav-minimap">
-        <div id="minimap" class="row">Minimap</div>
+        <div id="minimap" class="row" onmouseover="window.dispatchEvent(new Event('resize'))">minimap</div>
+        <div class="row">
+            <div class="col-5">
+                <button class="block btn glass" onclick="CosmoScout.flyto.reset()">reset</a>
+            </div>
+            <div class="col-7">
+                <label class="checklabel">
+                    <input type="checkbox" id="set_enable_lock_minimap"/>
+                    <i class="material-icons"></i>
+                    <span>Lock Minimap</span>
+                </label>
+            </div>
+        </div>
     </div>
 </div>
 

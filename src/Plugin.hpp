@@ -12,6 +12,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <optional>
 
 namespace csp::flytolocations {
 
@@ -37,9 +38,16 @@ class Plugin : public cs::core::PluginBase {
       std::string mGroup;     ///< The name of the group the location belongs to.
     };
 
+    struct Minimap {
+      std::string mMapServer;
+      std::string mLayer;
+      double      mCircumfence;
+    };
+
     /// Settings for a single target.
     struct Target {
       std::string                     mIcon;      ///< The path to an icon for the target.
+      std::optional<Minimap>          mMinimap;
       std::map<std::string, Location> mLocations; ///< All the locations belonging to the target.
     };
 

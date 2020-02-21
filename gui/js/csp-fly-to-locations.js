@@ -9,19 +9,78 @@ class FlyToApi extends IApi {
    * @type {string}
    */
   name = 'flyto';
+// Var for the minimap.
+  wmslayer = null;
+  minimap = null;
+  marker = null;
+// Say the active planet.
+  activePlanet = null;
+// Say the circumfence of the planet.
+  circumfencevar =0;
+
+  // Store last frame's observer position.
+  lastLong = 0.0;
+  lastLat = 0.0;
+  lastHeight = 0.0;
+
+  /**
+   * @inheritDoc
+   */
+  init() {
+    // Show the minimap and make a invisible border.
+    this.minimap = L.map(document.getElementById('minimap'), {
+        center: [52.315625,10.562169],
+        zoom: 3,
+        worldCopyJump:true,
+        maxBoundsViscosity: 0.5,
+        maxBounds:[
+          [-90, -180],
+          [90, 180]
+      ]});
+    this.wmslayer= L.tileLayer.wms('http://maps.sc.bs.dlr.de/mapserv?', {
+      layers: 'earth.bluemarble.rgb'
+    }).addTo(this.minimap);
+    this.marker = L.marker([50.5, 30.5]).addTo(this.minimap);
+
+    // Moving the planet with the minimap.
+    this.minimap.on('click', (e) => {
+      var location = { 
+        longitude: parseFloat(e.latlng.lng) ,
+        latitude: parseFloat(e.latlng.lat),
+        height: parseFloat(this.circumfencevar/ Math.pow(2, this.minimap.getZoom() 
+      ))};
+      this.flyTo(this.activePlanet, location, 5);
+    });   
+  } 
+   // Reset the minimap to the center.
+  reset() {
+    this.minimap.setView([0,0],[1])
+  }
 
   flyTo(planet, location, time) {
     if (typeof location === 'undefined') {
-      CosmoScout.callNative('fly_to', planet);
+      CosmoScout.callNative('fly_to_location', planet);
     } else {
-      CosmoScout.callNative('fly_to', planet, location.longitude, location.latitude, location.height, time);
+      CosmoScout.callNative('fly_to_location', planet, location.longitude, location.latitude, location.height, time);
     }
 
     CosmoScout.notifications.printNotification('Traveling', `to ${planet}`, 'send');
   }
+  setActivePlanet(name) {
+    this.activePlanet = name;
+  }
+// The marker move to the position on the planet.
+  setUserPosition(long, lat, height) {
+    this.marker.setLatLng([parseFloat(lat),parseFloat(long)])
+// The lockmap option and go to old position.
+    if ((this.lastLong != long || this.lastLat != lat || this.lastHeight != height) 
+        && document.getElementById("set_enable_lock_minimap").checked) {
+      this.minimap.setView([parseFloat(lat),parseFloat(long)],[this.minimap.getZoom()]);
+    }
 
-  setCelestialBody(name) {
-    CosmoScout.callNative('set_celestial_body', name);
+    this.lastLong = long;
+    this.lastLat = lat;
+    this.lastHeight = height;
   }
 
   /**
@@ -53,6 +112,30 @@ class FlyToApi extends IApi {
     }
 
     area.appendChild(button);
+  }
+// Hide and show the minimap.
+  enableMinimap(enable) {
+    if (enable) {
+      document.getElementById ('navi').classList.remove('hidden')
+    } else {
+      document.getElementById ('navi').classList.add('hidden')
+      document.getElementById ('nav-minimap').classList.remove('active')
+      document.getElementById ('tab-minimap').classList.remove('show')
+      document.getElementById ('tab-minimap').classList.remove('active')
+      document.getElementById ('nav-celestial-bodies').classList.add('active')
+      document.getElementById ('tab-celestial-bodies').classList.add('active')
+      document.getElementById ('tab-celestial-bodies').classList.add('show')
+    }
+
+  }
+ // Change the layerfor the minimap.
+  configureMinimap(mapserver, layer, circumfence) {
+    this.wmslayer.setParams({
+      "baseUrl": mapserver,
+      "layers": layer
+    });
+    // Change the circumfence.
+    this.circumfencevar = circumfence;
   }
 
   /**

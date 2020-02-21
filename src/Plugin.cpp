@@ -38,6 +38,14 @@ void from_json(const nlohmann::json& j, Plugin::Settings::Location& o) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void from_json(const nlohmann::json& j, Plugin::Settings::Minimap& o) {
+  o.mMapServer   = cs::core::parseProperty<std::string>("mapserver", j);
+  o.mLayer       = cs::core::parseProperty<std::string>("layer", j);
+  o.mCircumfence = cs::core::parseProperty<double>("circumfence", j);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void from_json(const nlohmann::json& j, Plugin::Settings::Target& o) {
   o.mIcon = cs::core::parseProperty<std::string>("icon", j);
 
@@ -45,6 +53,8 @@ void from_json(const nlohmann::json& j, Plugin::Settings::Target& o) {
   if (iter != j.end()) {
     o.mLocations = cs::core::parseMap<std::string, Plugin::Settings::Location>("locations", j);
   }
+
+  o.mMinimap = cs::core::parseOptional<Plugin::Settings::Minimap>("minimap", j);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,11 +75,15 @@ void Plugin::init() {
   mGuiManager->addHtmlToGui(
       "fly-to-locations", "../share/resources/gui/fly-to-locations-templates.html");
 
+  mGuiManager->addPluginTabToSideBarFromHTML(
+      "Navigation", "location_on", "../share/resources/gui/fly-to-locations-tab.html");
+
+  mGuiManager->addScriptToGuiFromJS("../share/resources/gui/third-party/leaflet/leaflet.js");
+  mGuiManager->addCssToGui("third-party/leaflet/leaflet.css");
+
   mGuiManager->addScriptToGuiFromJS("../share/resources/gui/js/csp-fly-to-locations.js");
   mGuiManager->addCssToGui("css/csp-fly-to-locations.css");
 
-  mGuiManager->addPluginTabToSideBarFromHTML(
-      "Navigation", "location_on", "../share/resources/gui/fly-to-locations-tab.html");
 
   for (auto const& settings : mPluginSettings.mTargets) {
     auto anchor = mAllSettings->mAnchors.find(settings.first);
@@ -86,14 +100,25 @@ void Plugin::init() {
   mActiveBodyConnection = mSolarSystem->pActiveBody.onChange().connect(
       [this](std::shared_ptr<cs::scene::CelestialBody> const& body) {
         mGuiManager->getGui()->callJavascript("CosmoScout.clearHtml", "location-tabs-area");
+        bool enableMinimap = false;
 
         if (body) {
           mGuiManager->getGui()->callJavascript(
               "CosmoScout.timeline.setActivePlanet", body->getCenterName());
 
+          mGuiManager->getGui()->callJavascript(
+              "CosmoScout.flyto.setActivePlanet", body->getCenterName());
+
           auto const& planet = mPluginSettings.mTargets.find(body->getCenterName());
 
           if (planet != mPluginSettings.mTargets.end()) {
+
+            if (planet->second.mMinimap) {
+              enableMinimap = true;
+              mGuiManager->getGui()->callJavascript(
+                  "CosmoScout.flyto.configureMinimap", planet->second.mMinimap->mMapServer, planet->second.mMinimap->mLayer, planet->second.mMinimap->mCircumfence);
+            }
+
             auto const& locations = planet->second.mLocations;
 
             for (auto loc : locations) {
@@ -102,6 +127,8 @@ void Plugin::init() {
             }
           }
         }
+        
+        mGuiManager->getGui()->callJavascript("CosmoScout.flyto.enableMinimap", enableMinimap);
       });
 
   mGuiManager->getGui()->registerCallback<std::string>("fly_to", [this](std::string const& name) {
