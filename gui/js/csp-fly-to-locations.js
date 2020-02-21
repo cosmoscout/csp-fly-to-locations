@@ -30,7 +30,7 @@ class FlyToApi extends IApi {
   init() {
     // Show the minimap and make an invisible border.
     this.minimap = L.map(document.getElementById('minimap'), {
-        center: [52.315625,10.562169],
+        center: [52.315625, 10.562169],
         zoom: 3,
         worldCopyJump: true,
         maxBoundsViscosity: 0.5,
