@@ -132,7 +132,8 @@ class FlyToApi extends IApi {
     }
 
   }
- // Change the layerfor the minimap.
+
+  // Update the map server and layer for the minimap.
   configureMinimap(mapserver, layer, circumfence) {
     this.wmslayer.setParams({
       "baseUrl": mapserver,
