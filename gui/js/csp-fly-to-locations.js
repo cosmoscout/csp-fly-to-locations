@@ -16,6 +16,17 @@ class FlyToApi extends IApi {
 // The active planet.
   activePlanet = null;
 // The circumfence of the planet.
+
+ 
+ // Variables for the minimap.
+  wmslayer = null;
+  minimap = null;
+  marker = null;
+
+ // The active planet.
+  activePlanet = null;
+
+ // The circumfence of the planet.
   circumfencevar = 0;
 
   // Store last frame's observer position.
@@ -74,6 +85,7 @@ class FlyToApi extends IApi {
 
     CosmoScout.notifications.printNotification('Traveling', `to ${planet}`, 'send');
   }
+  
   setActivePlanet(name) {
     this.activePlanet = name;
   }
@@ -121,7 +133,8 @@ class FlyToApi extends IApi {
 
     area.appendChild(button);
   }
-// Hide and show the minimap.
+
+ // Hide and show the minimap.
   enableMinimap(enable) {
     if (enable) {
       document.getElementById ('navi').classList.remove('hidden')
@@ -134,8 +147,8 @@ class FlyToApi extends IApi {
       document.getElementById ('tab-celestial-bodies').classList.add('active')
       document.getElementById ('tab-celestial-bodies').classList.add('show')
     }
-
   }
+  
 
   /**
    * csp-fly-to-locations
