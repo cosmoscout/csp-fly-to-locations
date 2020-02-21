@@ -37,18 +37,7 @@ class FlyToApi extends IApi {
           [-90, -180],
           [90, 180]
       ]});
-      configureMinimap(mapserver, layer, circumference);{
-        if (this.wmslayer == null) {
-          this.wmslayer = L.tileLayer.wms(mapserver, {layers: layer}).addTo(this.minimap);
-        } else {
-          this.wmslayer.setParams({
-            "baseUrl": mapserver,
-            "layers": layer
-          });
-        }
-        // Change the circumfence.
-        this.circumferencevar = circumference;
-      }
+
     // Moving the planet with the minimap.
     this.minimap.on('click', (e) => {
       var location = { 
@@ -60,6 +49,20 @@ class FlyToApi extends IApi {
     });   
   } 
   
+  configureMinimap(mapserver, layer, circumference) {
+    if (this.wmslayer == null) {
+      this.wmslayer = L.tileLayer.wms(mapserver, {layers: layer}).addTo(this.minimap);
+    } else {
+      this.wmslayer.setParams({
+        "baseUrl": mapserver,
+        "layers": layer
+      });
+    }
+    
+    // Change the circumfence.
+    this.circumferencevar = circumference;
+  }
+
    // Reset the minimap to the center.
   reset() {
     this.minimap.setView([0,0], 1)
