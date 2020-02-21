@@ -69,6 +69,7 @@ class FlyToApi extends IApi {
 
     CosmoScout.notifications.printNotification('Traveling', `to ${planet}`, 'send');
   }
+  
   setActivePlanet(name) {
     this.activePlanet = name;
   }
