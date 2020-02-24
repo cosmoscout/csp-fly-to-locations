@@ -41,6 +41,7 @@ class Plugin : public cs::core::PluginBase {
     struct Minimap {
       std::string                mMapServer;
       std::optional<std::string> mLayer;
+      std::optional<std::string> mAttribution;
       double                     mCircumference;
     };
 

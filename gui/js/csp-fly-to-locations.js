@@ -35,8 +35,10 @@ class FlyToApi extends IApi {
         maxBoundsViscosity: 0.5,
         maxBounds:[
           [-90, -180],
-          [90, 180]
-      ]});
+          [90, 180]],
+          
+      });
+      
       this.marker = L.marker([50.5, 30.5]).addTo(this.minimap);
 
     // Moving the planet with the minimap.
@@ -53,17 +55,24 @@ class FlyToApi extends IApi {
   update() {
     this.setObserverPosition(...CosmoScout.statusbar.getObserverPosition());
   }
-  
-  configureMinimap(mapserver, layer, circumference) {
-    if (this.wmslayer == null) {
-      this.wmslayer = L.tileLayer.wms(mapserver, {layers: layer}).addTo(this.minimap);
-    } else {
-      this.wmslayer.setParams({
-        "baseUrl": mapserver,
-        "layers": layer
-      });
-    }
 
+
+  
+  configureMinimap(mapserver, layer, attribution, circumference) {
+    
+
+    if (this.wmslayer != null) {
+        this.wmslayer.removeFrom(this.minimap);
+    } 
+    if (layer == ""){
+      this.wmslayer =L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{ 
+        attribution: '&copy; ' + attribution
+      }).addTo(this.minimap);
+    }
+    else{
+    this.wmslayer = L.tileLayer.wms(mapserver, { attribution: '&copy; ' + attribution, layers: layer })
+                    .addTo(this.minimap);
+  }
     // Change the circumfence.
     this.circumferencevar = circumference;
   }
