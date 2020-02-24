@@ -17,6 +17,12 @@ This plugin can be enabled with the following configuration in your `settings.js
       "targets": {
         <anchor name>: {
           "icon": <path to icon>,
+          "minimap":{               // optional
+             "mapserver": <webside of map>,
+             "layer": <layer of the map>
+             "attribution": <give attribution to provider>
+             "circumference": <circumference of the planet in meters>
+          }
           "locations": {              // optional
             <location name>: {
               "group":     <group name>,  // Locations with the same group will be put together.

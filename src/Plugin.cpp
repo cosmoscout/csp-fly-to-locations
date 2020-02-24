@@ -41,7 +41,7 @@ void from_json(const nlohmann::json& j, Plugin::Settings::Location& o) {
 
 void from_json(const nlohmann::json& j, Plugin::Settings::Minimap& o) {
   o.mMapServer   = cs::core::parseProperty<std::string>("mapserver", j);
-  o.mLayer       = cs::core::parseProperty<std::string>("layer", j);
+  o.mLayer       = cs::core::parseOptional<std::string>("layer", j);
   o.mCircumference = cs::core::parseProperty<double>("circumference", j);
 }
 
@@ -118,8 +118,9 @@ void Plugin::init() {
 
             if (planet->second.mMinimap) {
               enableMinimap = true;
+              std::string layer = planet->second.mMinimap->mLayer ? *planet->second.mMinimap->mLayer : "";
               mGuiManager->getGui()->callJavascript(
-                  "CosmoScout.flyto.configureMinimap", planet->second.mMinimap->mMapServer, planet->second.mMinimap->mLayer, planet->second.mMinimap->mCircumference);
+                  "CosmoScout.flyto.configureMinimap", planet->second.mMinimap->mMapServer, layer, planet->second.mMinimap->mCircumference);
             }
 
             auto const& locations = planet->second.mLocations;

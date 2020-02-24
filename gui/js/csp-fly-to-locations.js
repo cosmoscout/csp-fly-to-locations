@@ -56,10 +56,8 @@ class FlyToApi extends IApi {
   
   configureMinimap(mapserver, layer, circumference) {
     if (this.wmslayer == null) {
-      console.log("Setting up WMS lServer.");
       this.wmslayer = L.tileLayer.wms(mapserver, {layers: layer}).addTo(this.minimap);
     } else {
-      console.log("Changing WMS Server.");
       this.wmslayer.setParams({
         "baseUrl": mapserver,
         "layers": layer
