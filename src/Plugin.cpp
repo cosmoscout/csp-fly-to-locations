@@ -132,6 +132,7 @@ void Plugin::init() {
         }
         
         mGuiManager->getGui()->callJavascript("CosmoScout.flyto.enableMinimap", enableMinimap);
+        mGuiManager->getGui()->callJavascript("CosmoScout.flyto.setActivePlanet", body->getCenterName());
       });
 
   mGuiManager->getGui()->registerCallback<std::string>("fly_to", [this](std::string const& name) {

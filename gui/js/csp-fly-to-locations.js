@@ -37,6 +37,7 @@ class FlyToApi extends IApi {
           [-90, -180],
           [90, 180]
       ]});
+      this.marker = L.marker([50.5, 30.5]).addTo(this.minimap);
 
     // Moving the planet with the minimap.
     this.minimap.on('click', (e) => {
@@ -51,14 +52,16 @@ class FlyToApi extends IApi {
   
   configureMinimap(mapserver, layer, circumference) {
     if (this.wmslayer == null) {
+      console.log("Setting up WMS lServer.");
       this.wmslayer = L.tileLayer.wms(mapserver, {layers: layer}).addTo(this.minimap);
     } else {
+      console.log("Changing WMS Server.");
       this.wmslayer.setParams({
         "baseUrl": mapserver,
         "layers": layer
       });
     }
-    
+
     // Change the circumfence.
     this.circumferencevar = circumference;
   }
@@ -82,7 +85,7 @@ class FlyToApi extends IApi {
     this.activePlanet = name;
   }
 // The marker move to the position on the planet.
-  setUserPosition(long, lat, height) {
+  setObserverPosition(long, lat, height) {
     this.marker.setLatLng([parseFloat(lat),parseFloat(long)])
 // The lockmap option and go to old position.
     if ((this.lastLong != long || this.lastLat != lat || this.lastHeight != height) 
