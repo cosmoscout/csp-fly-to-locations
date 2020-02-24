@@ -48,7 +48,11 @@ class FlyToApi extends IApi {
       ))};
       this.flyTo(this.activePlanet, location, 5);
     });   
-  } 
+  }
+
+  update() {
+    this.setObserverPosition(...CosmoScout.statusbar.getObserverPosition());
+  }
   
   configureMinimap(mapserver, layer, circumference) {
     if (this.wmslayer == null) {
