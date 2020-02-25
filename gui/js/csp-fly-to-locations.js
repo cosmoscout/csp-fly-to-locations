@@ -12,16 +12,16 @@ class FlyToApi extends IApi {
 
   flyTo(planet, location, time) {
     if (typeof location === 'undefined') {
-      CosmoScout.callNative('fly_to', planet);
+      CosmoScout.callbacks.fly_to(planet);
     } else {
-      CosmoScout.callNative('fly_to', planet, location.longitude, location.latitude, location.height, time);
+      CosmoScout.callbacks.fly_to(planet, location.longitude, location.latitude, location.height, time);
     }
 
     CosmoScout.notifications.printNotification('Traveling', `to ${planet}`, 'send');
   }
 
   setCelestialBody(name) {
-    CosmoScout.callNative('set_celestial_body', name);
+    CosmoScout.callbacks.set_celestial_body(name);
   }
 
   /**
@@ -42,7 +42,7 @@ class FlyToApi extends IApi {
       .trim();
 
     button.addEventListener('click', () => {
-      CosmoScout.callNative('set_celestial_body', name);
+      CosmoScout.callbacks.set_celestial_body(name);
     });
 
     const area = document.getElementById('celestial-bodies');
@@ -113,7 +113,6 @@ class FlyToApi extends IApi {
     groupTab.appendChild(groupTabContent);
 
     CosmoScout.gui.initTooltips();
-    CosmoScout.gui.initDataCalls();
   }
 }
 
