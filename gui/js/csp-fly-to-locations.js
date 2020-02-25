@@ -37,8 +37,8 @@ class FlyToApi extends IApi {
     }
 
     button.innerHTML = button.innerHTML
-      .replace(this.regex('NAME'), name)
-      .replace(this.regex('ICON'), icon)
+      .replace(/%NAME%/g, name)
+      .replace(/%ICON%/g, icon)
       .trim();
 
     button.addEventListener('click', () => {
@@ -82,9 +82,9 @@ class FlyToApi extends IApi {
       const element = document.createElement('template');
 
       element.innerHTML = locationTabContent.outerHTML
-        .replace(this.regex('ACTIVE'), active)
-        .replace(this.regex('GROUP'), group)
-        .replace(this.regex('FIRST'), first.toString())
+        .replace(/%ACTIVE%/g, active)
+        .replace(/%GROUP%/g, group)
+        .replace(/%FIRST%/g, first.toString())
         .trim();
 
       locationsTab.appendChild(element.content);
@@ -94,9 +94,9 @@ class FlyToApi extends IApi {
       const tabContent = CosmoScout.gui.loadTemplateContent('location-tab-pane');
 
       element.innerHTML = tabContent.outerHTML
-        .replace(this.regex('SHOW'), show)
-        .replace(this.regex('ACTIVE'), active)
-        .replace(this.regex('GROUP'), group)
+        .replace(/%SHOW%/g, show)
+        .replace(/%ACTIVE%/g, active)
+        .replace(/%GROUP%/g, group)
         .trim();
 
       tabContents.appendChild(element.content);
@@ -107,7 +107,7 @@ class FlyToApi extends IApi {
     const groupTabContent = CosmoScout.gui.loadTemplateContent('location-group');
 
     groupTabContent.innerHTML = groupTabContent.innerHTML
-      .replace(this.regex('TEXT'), text)
+      .replace(/%TEXT%/g, text)
       .trim();
 
     groupTab.appendChild(groupTabContent);
