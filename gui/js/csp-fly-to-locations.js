@@ -3,18 +3,18 @@
 /**
  * FlyTo Api
  */
-class FlyToApi extends IApi {
+class FlyToLocationsApi extends IApi {
   /**
    * @inheritDoc
    * @type {string}
    */
-  name = 'flyto';
+  name = 'flyToLocations';
 
   flyTo(planet, location, time) {
     if (typeof location === 'undefined') {
-      CosmoScout.callbacks.flyTo(planet);
+      CosmoScout.callbacks.flyToLocations.flyTo(planet);
     } else {
-      CosmoScout.callbacks.flyTo(planet, location.longitude, location.latitude, location.height, time);
+      CosmoScout.callbacks.flyToLocations.flyTo(planet, location.longitude, location.latitude, location.height, time);
     }
 
     CosmoScout.notifications.printNotification('Traveling', `to ${planet}`, 'send');
@@ -117,5 +117,5 @@ class FlyToApi extends IApi {
 }
 
 (() => {
-  CosmoScout.init(FlyToApi);
+  CosmoScout.init(FlyToLocationsApi);
 })();
