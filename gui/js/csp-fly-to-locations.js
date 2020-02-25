@@ -65,7 +65,7 @@ class FlyToApi extends IApi {
         this.wmslayer.removeFrom(this.minimap);
     } 
     if (layer == ""){
-      this.wmslayer =L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{ 
+      this.wmslayer =L.tileLayer(mapserver,{ 
         attribution: '&copy; ' + attribution
       }).addTo(this.minimap);
     }
