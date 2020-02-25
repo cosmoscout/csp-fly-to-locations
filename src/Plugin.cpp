@@ -110,7 +110,7 @@ void Plugin::init() {
         }
       });
 
-  mGuiManager->getGui()->registerCallback<std::string>("fly_to", [this](std::string const& name) {
+  mGuiManager->getGui()->registerCallback<std::string>("flyTo", [this](std::string const& name) {
     if (!mSolarSystem->pActiveBody.get()) {
       return;
     }
@@ -140,7 +140,7 @@ void Plugin::init() {
 void Plugin::deInit() {
   spdlog::info("Unloading plugin...");
 
-  mGuiManager->getGui()->unregisterCallback("fly_to");
+  mGuiManager->getGui()->unregisterCallback("flyTo");
   mSolarSystem->pActiveBody.onChange().disconnect(mActiveBodyConnection);
   mGuiManager->getGui()->callJavascript("CosmoScout.gui.unregisterHtml", "fly-to-locations");
   mGuiManager->getGui()->callJavascript(
