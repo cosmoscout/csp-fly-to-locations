@@ -31,7 +31,7 @@ class FlyToApi extends IApi {
    * @param icon {string}
    */
   addCelestialBody(name, icon) {
-    const button = CosmoScout.loadTemplateContent('celestial-body');
+    const button = CosmoScout.gui.loadTemplateContent('celestial-body');
     if (button === false) {
       return;
     }
@@ -67,7 +67,7 @@ class FlyToApi extends IApi {
 
     if (tabArea.childNodes.length === 0) {
       first = true;
-      tabArea.appendChild(CosmoScout.loadTemplateContent('location-tab'));
+      tabArea.appendChild(CosmoScout.gui.loadTemplateContent('location-tab'));
     }
 
     const locationsTab = document.getElementById('location-tabs');
@@ -78,7 +78,7 @@ class FlyToApi extends IApi {
     if (groupTab === null) {
       const active = first ? 'active' : '';
 
-      const locationTabContent = CosmoScout.loadTemplateContent('location-tab-link');
+      const locationTabContent = CosmoScout.gui.loadTemplateContent('location-tab-link');
       const element = document.createElement('template');
 
       element.innerHTML = locationTabContent.outerHTML
@@ -91,7 +91,7 @@ class FlyToApi extends IApi {
 
       const show = first ? 'show' : '';
 
-      const tabContent = CosmoScout.loadTemplateContent('location-tab-pane');
+      const tabContent = CosmoScout.gui.loadTemplateContent('location-tab-pane');
 
       element.innerHTML = tabContent.outerHTML
         .replace(this.regex('SHOW'), show)
@@ -104,7 +104,7 @@ class FlyToApi extends IApi {
       groupTab = document.getElementById(`nav-${group}`);
     }
 
-    const groupTabContent = CosmoScout.loadTemplateContent('location-group');
+    const groupTabContent = CosmoScout.gui.loadTemplateContent('location-group');
 
     groupTabContent.innerHTML = groupTabContent.innerHTML
       .replace(this.regex('TEXT'), text)
@@ -112,8 +112,8 @@ class FlyToApi extends IApi {
 
     groupTab.appendChild(groupTabContent);
 
-    CosmoScout.initTooltips();
-    CosmoScout.initDataCalls();
+    CosmoScout.gui.initTooltips();
+    CosmoScout.gui.initDataCalls();
   }
 }
 

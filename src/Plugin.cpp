@@ -94,7 +94,7 @@ void Plugin::init() {
 
   mActiveBodyConnection = mSolarSystem->pActiveBody.onChange().connect(
       [this](std::shared_ptr<cs::scene::CelestialBody> const& body) {
-        mGuiManager->getGui()->callJavascript("CosmoScout.clearHtml", "location-tabs-area");
+        mGuiManager->getGui()->callJavascript("CosmoScout.gui.clearHtml", "location-tabs-area");
 
         if (body) {
           auto const& planet = mPluginSettings.mTargets.find(body->getCenterName());
@@ -142,8 +142,9 @@ void Plugin::deInit() {
 
   mGuiManager->getGui()->unregisterCallback("fly_to");
   mSolarSystem->pActiveBody.onChange().disconnect(mActiveBodyConnection);
-  mGuiManager->getGui()->callJavascript("CosmoScout.unregisterHtml", "fly-to-locations");
-  mGuiManager->getGui()->callJavascript("CosmoScout.unregisterCss", "css/csp-fly-to-locations.css");
+  mGuiManager->getGui()->callJavascript("CosmoScout.gui.unregisterHtml", "fly-to-locations");
+  mGuiManager->getGui()->callJavascript(
+      "CosmoScout.gui.unregisterCss", "css/csp-fly-to-locations.css");
 
   spdlog::info("Unloading done.");
 }
