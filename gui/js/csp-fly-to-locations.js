@@ -17,11 +17,7 @@ class FlyToLocationsApi extends IApi {
       CosmoScout.callbacks.flyToLocations.flyTo(planet, location.longitude, location.latitude, location.height, time);
     }
 
-    CosmoScout.notifications.printNotification('Traveling', `to ${planet}`, 'send');
-  }
-
-  setCelestialBody(name) {
-    CosmoScout.callbacks.setCelestialBody(name);
+    CosmoScout.notifications.print('Traveling', `to ${planet}`, 'send');
   }
 
   /**
@@ -42,7 +38,7 @@ class FlyToLocationsApi extends IApi {
       .trim();
 
     button.addEventListener('click', () => {
-      CosmoScout.callbacks.setCelestialBody(name);
+      CosmoScout.callbacks.navigation.setCelestialBody(name);
     });
 
     const area = document.getElementById('celestial-bodies');
