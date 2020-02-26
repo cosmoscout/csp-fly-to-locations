@@ -89,7 +89,7 @@ void Plugin::init() {
     }
 
     mGuiManager->getGui()->callJavascript(
-        "CosmoScout.flyto.addCelestialBody", anchor->second.mCenter, settings.second.mIcon);
+        "CosmoScout.flyToLocations.addCelestialBody", anchor->second.mCenter, settings.second.mIcon);
   }
 
   mActiveBodyConnection = mSolarSystem->pActiveBody.onChange().connect(
