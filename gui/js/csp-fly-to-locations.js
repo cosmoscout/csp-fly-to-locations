@@ -84,8 +84,7 @@ class FlyToApi extends IApi {
       this.wmslayer =L.tileLayer(mapserver,{ 
         attribution: '&copy; ' + attribution
       }).addTo(this.minimap);
-    }
-    else{
+    } else {
     this.wmslayer = L.tileLayer.wms(mapserver, { attribution: '&copy; ' + attribution, layers: layer })
                     .addTo(this.minimap);
   }
