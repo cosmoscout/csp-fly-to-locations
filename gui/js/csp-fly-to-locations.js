@@ -77,9 +77,6 @@ class FlyToApi extends IApi {
   update() {
     this.setObserverPosition(...CosmoScout.statusbar.getObserverPosition())
   }
-
-
-  
   configureMinimap(mapserver, layer, attribution, circumference) {
     if (this.wmslayer != null) {
         this.wmslayer.removeFrom(this.minimap);
