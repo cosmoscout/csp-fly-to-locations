@@ -27,6 +27,13 @@ class FlyToApi extends IApi {
     popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
   })
   
+  bookmarkl = L.icon({
+    iconUrl: 'third-party/leaflet/images/marker-iconbook.png',
+    iconSize:     [20, 35], // size of the icon
+    iconAnchor:   [10, 30], // point of the icon which will correspond to marker's location
+    popupAnchor:  [5, 5] // point from which the popup should open relative to the iconAnchor
+  })
+  
 // The active planet.
   activePlanet = null;
  // The circumfence of the planet.
@@ -181,8 +188,36 @@ class FlyToApi extends IApi {
     const bookmarkArea = document.getElementById('location-tabs-area');
     document.getElementById('bookmarks').classList.add('hidden')
 
-    // hide
+    
   }
+ addBookmarkbn(){
+   if (document.getElementById('bookmarkname').value != "") {
+  var bookmarkss = L.marker([this.lastLat,this.lastLong],{icon: this.bookmarkl}).addTo(this.minimap);
+  bookmarkss.bindPopup(document.getElementById('bookmarkname').value);
+  this.bookmarks.push(bookmarkss)
+
+  
+  let first = false;
+  const bookmarkArea = document.getElementById('location-tabs-area');
+  if (bookmarkArea.childNodes.length >= 0){
+    document.getElementById('bookmarks').classList.remove('hidden')
+  }
+    // Loads a template for a bookmark row containing a name and a button.
+    const bookmarkRow = CosmoScout.loadTemplateContent('location-group');
+
+    // Sets the name of the bookmark row
+    bookmarkRow.innerHTML = bookmarkRow.innerHTML
+      .replace(this.regex('TEXT'), document.getElementById('bookmarkname').value)
+      .trim();
+
+    bookmarkArea.appendChild(bookmarkRow);
+
+    CosmoScout.initTooltips();
+    CosmoScout.initDataCalls();
+    console.log(document.getElementById('bookmarkname').value)
+    document.getElementById('bookmarkname').value = ""
+   
+ }}
 
   /**
    * csp-fly-to-locations
