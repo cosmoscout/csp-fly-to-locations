@@ -74,8 +74,6 @@ class FlyToApi extends IApi {
 
   
   configureMinimap(mapserver, layer, attribution, circumference) {
-    
-
     if (this.wmslayer != null) {
         this.wmslayer.removeFrom(this.minimap);
     } 
