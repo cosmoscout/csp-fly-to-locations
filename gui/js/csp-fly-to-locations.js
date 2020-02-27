@@ -161,13 +161,13 @@ class FlyToApi extends IApi {
     if (enable) {
       document.getElementById ('navi').classList.remove('hidden')
     } else {
-      document.getElementById ('navi').classList.add('hidden')
-      document.getElementById ('nav-minimap').classList.remove('active')
-      document.getElementById ('tab-minimap').classList.remove('show')
-      document.getElementById ('tab-minimap').classList.remove('active')
-      document.getElementById ('nav-celestial-bodies').classList.add('active')
-      document.getElementById ('tab-celestial-bodies').classList.add('active')
-      document.getElementById ('tab-celestial-bodies').classList.add('show')
+      document.getElementById('navi').classList.add('hidden')
+      document.getElementById('nav-minimap').classList.remove('active')
+      document.getElementById('tab-minimap').classList.remove('show')
+      document.getElementById('tab-minimap').classList.remove('active')
+      document.getElementById('nav-celestial-bodies').classList.add('active')
+      document.getElementById('tab-celestial-bodies').classList.add('active')
+      document.getElementById('tab-celestial-bodies').classList.add('show')
       document.getElementById('bookmarks').classList.add('hidden')
     }
   }
