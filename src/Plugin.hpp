@@ -31,11 +31,10 @@ class Plugin : public cs::core::PluginBase {
   struct Settings {
 
     /// Settings for a location within a target.
-    struct Location {
+    struct Bookmark {
       double      mLatitude;  ///< The latitude of the location.
       double      mLongitude; ///< The longitude of the location.
-      double      mExtent;    ///< The location size in meters.
-      std::string mGroup;     ///< The name of the group the location belongs to.
+      double      mHeight;    ///< The location size in meters.
     };
 
     struct Minimap {
@@ -49,7 +48,7 @@ class Plugin : public cs::core::PluginBase {
     struct Target {
       std::string                     mIcon;      ///< The path to an icon for the target.
       std::optional<Minimap>          mMinimap;
-      std::map<std::string, Location> mLocations; ///< All the locations belonging to the target.
+      std::map<std::string, Bookmark> mBookmarks; ///< All the locations belonging to the target.
     };
 
     std::map<std::string, Target> mTargets;

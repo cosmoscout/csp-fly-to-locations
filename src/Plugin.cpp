@@ -30,11 +30,10 @@ namespace csp::flytolocations {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void from_json(const nlohmann::json& j, Plugin::Settings::Location& o) {
+void from_json(const nlohmann::json& j, Plugin::Settings::Bookmark& o) {
   o.mLatitude  = cs::core::parseProperty<double>("latitude", j);
   o.mLongitude = cs::core::parseProperty<double>("longitude", j);
-  o.mExtent    = cs::core::parseProperty<double>("extent", j);
-  o.mGroup     = cs::core::parseProperty<std::string>("group", j);
+  o.mHeight    = cs::core::parseProperty<double>("height", j);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,9 +50,9 @@ void from_json(const nlohmann::json& j, Plugin::Settings::Minimap& o) {
 void from_json(const nlohmann::json& j, Plugin::Settings::Target& o) {
   o.mIcon = cs::core::parseProperty<std::string>("icon", j);
 
-  auto iter = j.find("locations");
+  auto iter = j.find("bookmarks");
   if (iter != j.end()) {
-    o.mLocations = cs::core::parseMap<std::string, Plugin::Settings::Location>("locations", j);
+    o.mBookmarks = cs::core::parseMap<std::string, Plugin::Settings::Bookmark>("bookmarks", j);
   }
 
   o.mMinimap = cs::core::parseOptional<Plugin::Settings::Minimap>("minimap", j);
@@ -125,11 +124,12 @@ void Plugin::init() {
                   "CosmoScout.flyto.configureMinimap", planet->second.mMinimap->mMapServer, layer, attribution, planet->second.mMinimap->mCircumference);
             }
 
-            auto const& locations = planet->second.mLocations;
+            auto const& bookmarks = planet->second.mBookmarks;
 
-            for (auto loc : locations) {
+            mGuiManager->getGui()->callJavascript("CosmoScout.flyto.clearBookmarks");
+            for (auto loc : bookmarks) {
               mGuiManager->getGui()->callJavascript(
-                  "CosmoScout.flyto.addLocation", loc.second.mGroup, loc.first);
+                  "CosmoScout.flyto.addBookmark", loc.first, loc.second.mLatitude, loc.second.mLongitude);
             }
           }
         }
@@ -146,15 +146,15 @@ void Plugin::init() {
     for (auto const& planet : mPluginSettings.mTargets) {
       auto anchor = mAllSettings->mAnchors.find(planet.first);
       if (anchor->second.mCenter == mSolarSystem->pActiveBody.get()->getCenterName()) {
-        auto const& location = planet.second.mLocations.find(name);
-        if (location != planet.second.mLocations.end()) {
-          glm::dvec2 lngLat(location->second.mLongitude, location->second.mLatitude);
+        auto const& bookmark = planet.second.mBookmarks.find(name);
+        if (bookmark != planet.second.mBookmarks.end()) {
+          glm::dvec2 lngLat(bookmark->second.mLongitude, bookmark->second.mLatitude);
           lngLat        = cs::utils::convert::toRadians(lngLat);
           double height = mSolarSystem->pActiveBody.get()->getHeight(lngLat);
           mSolarSystem->flyObserverTo(mSolarSystem->pActiveBody.get()->getCenterName(),
               mSolarSystem->pActiveBody.get()->getFrameName(), lngLat,
-              location->second.mExtent + height, 5.0);
-          mGuiManager->showNotification("Travelling", "to " + location->first, "send");
+              bookmark->second.mHeight + height, 5.0);
+          mGuiManager->showNotification("Travelling", "to " + bookmark->first, "send");
         }
       }
     }

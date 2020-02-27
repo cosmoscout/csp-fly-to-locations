@@ -8,5 +8,12 @@
 
 #minimap {
     background-color: black;
-    height: 300px;
+    height: 430px;
 }
+
+#bookmarks {
+    text-align: center;
+    text-decoration: underline;
+
+}
+

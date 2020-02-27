@@ -13,6 +13,20 @@ class FlyToApi extends IApi {
   wmslayer = null;
   minimap = null;
   marker = null;
+  bookmarker = L.icon({
+    iconUrl: 'third-party/leaflet/images/marker-icon.png',
+    iconSize:     [20, 35], // size of the icon
+    iconAnchor:   [10, 30], // point of the icon which will correspond to marker's location
+    popupAnchor:  [5, 5] // point from which the popup should open relative to the iconAnchor
+  })
+  bookmarks = [];
+  usericon = L.icon({
+    iconUrl: 'third-party/leaflet/images/Untitled.png',
+    iconSize:     [10, 10], // size of the icon
+    iconAnchor:   [5, 5], // point of the icon which will correspond to marker's location
+    popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
+  })
+  
 // The active planet.
   activePlanet = null;
  // The circumfence of the planet.
@@ -39,8 +53,9 @@ class FlyToApi extends IApi {
           
       });
       
-      this.marker = L.marker([50.5, 30.5]).addTo(this.minimap);
+      this.marker   =L.marker([50.5 ,30.5 ],{icon: this.usericon}).addTo(this.minimap);
 
+      
     // Moving the planet with the minimap.
     this.minimap.on('click', (e) => {
       var location = { 
@@ -53,7 +68,7 @@ class FlyToApi extends IApi {
   }
 
   update() {
-    this.setObserverPosition(...CosmoScout.statusbar.getObserverPosition());
+    this.setObserverPosition(...CosmoScout.statusbar.getObserverPosition())
   }
 
 
@@ -152,66 +167,50 @@ class FlyToApi extends IApi {
       document.getElementById ('nav-celestial-bodies').classList.add('active')
       document.getElementById ('tab-celestial-bodies').classList.add('active')
       document.getElementById ('tab-celestial-bodies').classList.add('show')
+      document.getElementById('bookmarks').classList.add('hidden')
     }
   }
   
+  clearBookmarks() {
+    for (var i of this.bookmarks) {
+      i.removeFrom(this.minimap);
+    }
+    
+    this.bookmarks = [];
+
+    const bookmarkArea = document.getElementById('location-tabs-area');
+    document.getElementById('bookmarks').classList.add('hidden')
+
+    // hide
+  }
 
   /**
    * csp-fly-to-locations
    *
-   * @param group {string}
    * @param text {string}
    */
-  addLocation(group, text) {
+  addBookmark(text, lat, lng) {
+
+    var bookmark = L.marker([lat,lng],{icon: this.bookmarker}).addTo(this.minimap);
+    bookmark.bindPopup(text);
+    this.bookmarks.push(bookmark)
+
+    
     let first = false;
-    const tabArea = document.getElementById('location-tabs-area');
-
-    if (tabArea.childNodes.length === 0) {
-      first = true;
-      tabArea.appendChild(CosmoScout.loadTemplateContent('location-tab'));
+    const bookmarkArea = document.getElementById('location-tabs-area');
+    if (bookmarkArea.childNodes.length >= 0){
+      document.getElementById('bookmarks').classList.remove('hidden')
     }
 
-    const locationsTab = document.getElementById('location-tabs');
-    const tabContents = document.getElementById('nav-tabContents');
+    // Loads a template for a bookmark row containing a name and a button.
+    const bookmarkRow = CosmoScout.loadTemplateContent('location-group');
 
-    let groupTab = document.getElementById(`nav-${group}`);
-
-    if (groupTab === null) {
-      const active = first ? 'active' : '';
-
-      const locationTabContent = CosmoScout.loadTemplateContent('location-tab-link');
-      const element = document.createElement('template');
-
-      element.innerHTML = locationTabContent.outerHTML
-        .replace(this.regex('ACTIVE'), active)
-        .replace(this.regex('GROUP'), group)
-        .replace(this.regex('FIRST'), first.toString())
-        .trim();
-
-      locationsTab.appendChild(element.content);
-
-      const show = first ? 'show' : '';
-
-      const tabContent = CosmoScout.loadTemplateContent('location-tab-pane');
-
-      element.innerHTML = tabContent.outerHTML
-        .replace(this.regex('SHOW'), show)
-        .replace(this.regex('ACTIVE'), active)
-        .replace(this.regex('GROUP'), group)
-        .trim();
-
-      tabContents.appendChild(element.content);
-
-      groupTab = document.getElementById(`nav-${group}`);
-    }
-
-    const groupTabContent = CosmoScout.loadTemplateContent('location-group');
-
-    groupTabContent.innerHTML = groupTabContent.innerHTML
+    // Sets the name of the bookmark row
+    bookmarkRow.innerHTML = bookmarkRow.innerHTML
       .replace(this.regex('TEXT'), text)
       .trim();
 
-    groupTab.appendChild(groupTabContent);
+    bookmarkArea.appendChild(bookmarkRow);
 
     CosmoScout.initTooltips();
     CosmoScout.initDataCalls();
