@@ -185,12 +185,8 @@ class FlyToApi extends IApi {
 
     const bookmarkArea = document.getElementById('location-tabs-area');
     document.getElementById('bookmarks').classList.add('hidden')
-<<<<<<< HEAD
-
-    
-=======
->>>>>>> 727a23bc5f13ca19c9aca29223eba8a6380aa9e8
   }
+  
  addBookmarkbn(){
    if (document.getElementById('bookmarkname').value != "") {
   var bookmarkss = L.marker([this.lastLat,this.lastLong],{icon: this.bookmarkl}).addTo(this.minimap);
