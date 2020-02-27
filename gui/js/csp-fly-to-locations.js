@@ -53,7 +53,7 @@ class FlyToApi extends IApi {
         center: [0, 0],
         zoom: 3,
         worldCopyJump: true,
-        maxBoundsViscosity: 0.5,
+      this.marker   =L.marker([0, 0] ,{icon: this.usericon}).addTo(this.minimap);
         maxBounds:[
           [-90, -180],
           [90, 180]],
@@ -77,9 +77,6 @@ class FlyToApi extends IApi {
   update() {
     this.setObserverPosition(...CosmoScout.statusbar.getObserverPosition())
   }
-
-
-  
   configureMinimap(mapserver, layer, attribution, circumference) {
     if (this.wmslayer != null) {
         this.wmslayer.removeFrom(this.minimap);
