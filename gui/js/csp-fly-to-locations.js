@@ -53,7 +53,7 @@ class FlyToApi extends IApi {
         center: [0, 0],
         zoom: 3,
         worldCopyJump: true,
-      this.marker   =L.marker([0, 0] ,{icon: this.usericon}).addTo(this.minimap);
+     
         maxBounds:[
           [-90, -180],
           [90, 180]],
@@ -183,7 +183,7 @@ class FlyToApi extends IApi {
     const bookmarkArea = document.getElementById('location-tabs-area');
     document.getElementById('bookmarks').classList.add('hidden')
   }
-  
+
  addBookmarkbn(){
    if (document.getElementById('bookmarkname').value != "") {
   var bookmarkss = L.marker([this.lastLat,this.lastLong],{icon: this.bookmarkl}).addTo(this.minimap);

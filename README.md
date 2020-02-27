@@ -23,16 +23,16 @@ This plugin can be enabled with the following configuration in your `settings.js
              "attribution": <give attribution to provider>
              "circumference": <circumference of the planet in meters>
           }
-          "locations": {              // optional
-            <location name>: {
-              "group":     <group name>,  // Locations with the same group will be put together.
+          "bookmarks": {              // optional
+            
+              "location": {
               "latitude":  <float>
               "longitude": <float>
-              "extend":    <float>    // The approximate size of the location in meters. 
+              "height":    <float>    // for the zoom level on the planet 
                                       // The fly-to trajectory will try to show 
                                       // the full location on screen.
-            },
-            ... <more locations> ...
+            }
+          }
           }
         },
         ... <more targets> ...
