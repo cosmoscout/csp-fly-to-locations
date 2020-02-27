@@ -181,8 +181,6 @@ class FlyToApi extends IApi {
 
     const bookmarkArea = document.getElementById('location-tabs-area');
     document.getElementById('bookmarks').classList.add('hidden')
-
-    // hide
   }
 
   /**
