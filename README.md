@@ -17,7 +17,7 @@ This plugin can be enabled with the following configuration in your `settings.js
       "targets": {
         <anchor name>: {
           "icon": <path to icon>,
-          "minimap":{               // optional
+          "minimap": {               // optional
              "mapserver": <webside of map>,
              "layer": <layer of the map>
              "attribution": <give attribution to provider>

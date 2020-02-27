@@ -18,14 +18,14 @@ class FlyToApi extends IApi {
     iconSize:     [20, 35], // size of the icon
     iconAnchor:   [10, 30], // point of the icon which will correspond to marker's location
     popupAnchor:  [5, 5] // point from which the popup should open relative to the iconAnchor
-  })
+  });
   bookmarks = [];
   usericon = L.icon({
     iconUrl: 'third-party/leaflet/images/Untitled.png',
     iconSize:     [10, 10], // size of the icon
     iconAnchor:   [5, 5], // point of the icon which will correspond to marker's location
     popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
-  })
+  });
   
   bookmarkl = L.icon({
     iconUrl: 'third-party/leaflet/images/marker-iconbook.png',
@@ -50,7 +50,7 @@ class FlyToApi extends IApi {
   init() {
     // Show the minimap and make an invisible border.
     this.minimap = L.map(document.getElementById('minimap'), {
-        center: [52.315625, 10.562169],
+        center: [0, 0],
         zoom: 3,
         worldCopyJump: true,
         maxBoundsViscosity: 0.5,
@@ -81,17 +81,15 @@ class FlyToApi extends IApi {
 
   
   configureMinimap(mapserver, layer, attribution, circumference) {
-    
-
     if (this.wmslayer != null) {
         this.wmslayer.removeFrom(this.minimap);
     } 
+    
     if (layer == ""){
       this.wmslayer =L.tileLayer(mapserver,{ 
         attribution: '&copy; ' + attribution
       }).addTo(this.minimap);
-    }
-    else{
+    } else {
     this.wmslayer = L.tileLayer.wms(mapserver, { attribution: '&copy; ' + attribution, layers: layer })
                     .addTo(this.minimap);
   }
@@ -167,13 +165,13 @@ class FlyToApi extends IApi {
     if (enable) {
       document.getElementById ('navi').classList.remove('hidden')
     } else {
-      document.getElementById ('navi').classList.add('hidden')
-      document.getElementById ('nav-minimap').classList.remove('active')
-      document.getElementById ('tab-minimap').classList.remove('show')
-      document.getElementById ('tab-minimap').classList.remove('active')
-      document.getElementById ('nav-celestial-bodies').classList.add('active')
-      document.getElementById ('tab-celestial-bodies').classList.add('active')
-      document.getElementById ('tab-celestial-bodies').classList.add('show')
+      document.getElementById('navi').classList.add('hidden')
+      document.getElementById('nav-minimap').classList.remove('active')
+      document.getElementById('tab-minimap').classList.remove('show')
+      document.getElementById('tab-minimap').classList.remove('active')
+      document.getElementById('nav-celestial-bodies').classList.add('active')
+      document.getElementById('tab-celestial-bodies').classList.add('active')
+      document.getElementById('tab-celestial-bodies').classList.add('show')
       document.getElementById('bookmarks').classList.add('hidden')
     }
   }
@@ -187,8 +185,11 @@ class FlyToApi extends IApi {
 
     const bookmarkArea = document.getElementById('location-tabs-area');
     document.getElementById('bookmarks').classList.add('hidden')
+<<<<<<< HEAD
 
     
+=======
+>>>>>>> 727a23bc5f13ca19c9aca29223eba8a6380aa9e8
   }
  addBookmarkbn(){
    if (document.getElementById('bookmarkname').value != "") {
