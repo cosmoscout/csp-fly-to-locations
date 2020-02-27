@@ -18,7 +18,7 @@ class FlyToApi extends IApi {
     iconSize:     [20, 35], // size of the icon
     iconAnchor:   [10, 30], // point of the icon which will correspond to marker's location
     popupAnchor:  [5, 5] // point from which the popup should open relative to the iconAnchor
-  })
+  });
   bookmarks = [];
   usericon = L.icon({
     iconUrl: 'third-party/leaflet/images/Untitled.png',
