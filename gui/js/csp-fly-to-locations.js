@@ -79,6 +79,7 @@ class FlyToApi extends IApi {
     if (this.wmslayer != null) {
         this.wmslayer.removeFrom(this.minimap);
     } 
+    
     if (layer == ""){
       this.wmslayer =L.tileLayer(mapserver,{ 
         attribution: '&copy; ' + attribution
