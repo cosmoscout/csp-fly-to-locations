@@ -24,15 +24,14 @@ This plugin can be enabled with the following configuration in your `settings.js
              "circumference": <circumference of the planet in meters>
           }
           "bookmarks": {              // optional
-            
-              "location": {
+            <location name>: {
               "latitude":  <float>
               "longitude": <float>
               "height":    <float>    // for the zoom level on the planet 
                                       // The fly-to trajectory will try to show 
                                       // the full location on screen.
-            }
-          }
+            },
+            ... <more bookmarks> ...
           }
         },
         ... <more targets> ...

@@ -93,7 +93,6 @@ void Plugin::init() {
   mGuiManager->addScriptToGuiFromJS("../share/resources/gui/js/csp-fly-to-locations.js");
   mGuiManager->addCssToGui("css/csp-fly-to-locations.css");
 
-
   for (auto const& settings : mPluginSettings.mTargets) {
     auto anchor = mAllSettings->mAnchors.find(settings.first);
 
@@ -118,24 +117,42 @@ void Plugin::init() {
 
             if (planet->second.mMinimap) {
               enableMinimap = true;
-              std::string layer = planet->second.mMinimap->mLayer ? *planet->second.mMinimap->mLayer : "";
-              std::string attribution = planet->second.mMinimap->mAttribution ? *planet->second.mMinimap->mAttribution : "";
-              mGuiManager->getGui()->callJavascript(
-                  "CosmoScout.flyto.configureMinimap", planet->second.mMinimap->mMapServer, layer, attribution, planet->second.mMinimap->mCircumference);
+              std::string layer =
+                  planet->second.mMinimap->mLayer ? *planet->second.mMinimap->mLayer : "";
+              std::string attribution = planet->second.mMinimap->mAttribution
+                                            ? *planet->second.mMinimap->mAttribution
+                                            : "";
+              mGuiManager->getGui()->callJavascript("CosmoScout.flyto.configureMinimap",
+                  planet->second.mMinimap->mMapServer, layer, attribution,
+                  planet->second.mMinimap->mCircumference);
             }
 
             auto const& bookmarks = planet->second.mBookmarks;
 
             mGuiManager->getGui()->callJavascript("CosmoScout.flyto.clearBookmarks");
             for (auto loc : bookmarks) {
-              mGuiManager->getGui()->callJavascript(
-                  "CosmoScout.flyto.addBookmark", loc.first, loc.second.mLatitude, loc.second.mLongitude);
+              mGuiManager->getGui()->callJavascript("CosmoScout.flyto.addBookmark", loc.first,
+                  loc.second.mLatitude, loc.second.mLongitude);
             }
           }
         }
-        
+
         mGuiManager->getGui()->callJavascript("CosmoScout.flyto.enableMinimap", enableMinimap);
-        mGuiManager->getGui()->callJavascript("CosmoScout.flyto.setActivePlanet", body->getCenterName());
+        mGuiManager->getGui()->callJavascript(
+            "CosmoScout.flyto.setActivePlanet", body->getCenterName());
+      });
+
+  mGuiManager->getGui()->registerCallback<std::string, double, double, double>(
+      "add_new_bookmark", [this](std::string const& name, double lat, double lng, double height) {
+        if (mSolarSystem->pActiveBody.get()) {
+
+          auto const& planet =
+              mPluginSettings.mTargets.find(mSolarSystem->pActiveBody.get()->getCenterName());
+
+          if (planet != mPluginSettings.mTargets.end()) {
+            planet->second.mBookmarks[name] = {lat, lng, height};
+          }
+        }
       });
 
   mGuiManager->getGui()->registerCallback<std::string>("fly_to", [this](std::string const& name) {

@@ -10,9 +10,9 @@
 #include "../../../src/cs-core/PluginBase.hpp"
 
 #include <map>
+#include <optional>
 #include <string>
 #include <vector>
-#include <optional>
 
 namespace csp::flytolocations {
 
@@ -32,9 +32,9 @@ class Plugin : public cs::core::PluginBase {
 
     /// Settings for a location within a target.
     struct Bookmark {
-      double      mLatitude;  ///< The latitude of the location.
-      double      mLongitude; ///< The longitude of the location.
-      double      mHeight;    ///< The location size in meters.
+      double mLatitude;  ///< The latitude of the location.
+      double mLongitude; ///< The longitude of the location.
+      double mHeight;    ///< The location size in meters.
     };
 
     struct Minimap {
@@ -46,7 +46,7 @@ class Plugin : public cs::core::PluginBase {
 
     /// Settings for a single target.
     struct Target {
-      std::string                     mIcon;      ///< The path to an icon for the target.
+      std::string                     mIcon; ///< The path to an icon for the target.
       std::optional<Minimap>          mMinimap;
       std::map<std::string, Bookmark> mBookmarks; ///< All the locations belonging to the target.
     };
