@@ -88,8 +88,8 @@ void Plugin::init() {
           "There is no Anchor \"" + settings.first + "\" defined in the settings.");
     }
 
-    mGuiManager->getGui()->callJavascript(
-        "CosmoScout.flyToLocations.addCelestialBody", anchor->second.mCenter, settings.second.mIcon);
+    mGuiManager->getGui()->callJavascript("CosmoScout.flyToLocations.addCelestialBody",
+        anchor->second.mCenter, settings.second.mIcon);
   }
 
   mActiveBodyConnection = mSolarSystem->pActiveBody.onChange().connect(
