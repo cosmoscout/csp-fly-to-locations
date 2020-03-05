@@ -110,8 +110,8 @@ void Plugin::init() {
         }
       });
 
-  mGuiManager->getGui()->registerCallback<std::string>(
-      "flyToLocations.flyTo", [this](std::string const& name) {
+  mGuiManager->getGui()->registerCallback(
+      "flyToLocations.flyTo", std::function([this](std::string&& name) {
         if (!mSolarSystem->pActiveBody.get()) {
           return;
         }
@@ -131,7 +131,7 @@ void Plugin::init() {
             }
           }
         }
-      });
+      }));
 
   spdlog::info("Loading done.");
 }
