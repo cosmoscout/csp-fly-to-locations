@@ -14,7 +14,8 @@ class FlyToLocationsApi extends IApi {
     if (typeof location === 'undefined') {
       CosmoScout.callbacks.flyToLocations.flyTo(planet);
     } else {
-      CosmoScout.callbacks.flyToLocations.flyTo(planet, location.longitude, location.latitude, location.height, time);
+      CosmoScout.callbacks.flyToLocations.flyTo(
+          planet, location.longitude, location.latitude, location.height, time);
     }
 
     CosmoScout.notifications.print('Traveling', `to ${planet}`, 'send');
@@ -32,10 +33,7 @@ class FlyToLocationsApi extends IApi {
       return;
     }
 
-    button.innerHTML = button.innerHTML
-      .replace(/%NAME%/g, name)
-      .replace(/%ICON%/g, icon)
-      .trim();
+    button.innerHTML = button.innerHTML.replace(/%NAME%/g, name).replace(/%ICON%/g, icon).trim();
 
     button.addEventListener('click', () => {
       CosmoScout.callbacks.navigation.setCelestialBody(name);
@@ -58,7 +56,7 @@ class FlyToLocationsApi extends IApi {
    * @param text {string}
    */
   addLocation(group, text) {
-    let first = false;
+    let first     = false;
     const tabArea = document.getElementById('location-tabs-area');
 
     if (tabArea.childNodes.length === 0) {
@@ -67,7 +65,7 @@ class FlyToLocationsApi extends IApi {
     }
 
     const locationsTab = document.getElementById('location-tabs');
-    const tabContents = document.getElementById('nav-tabContents');
+    const tabContents  = document.getElementById('nav-tabContents');
 
     let groupTab = document.getElementById(`nav-${group}`);
 
@@ -75,13 +73,12 @@ class FlyToLocationsApi extends IApi {
       const active = first ? 'active' : '';
 
       const locationTabContent = CosmoScout.gui.loadTemplateContent('location-tab-link');
-      const element = document.createElement('template');
+      const element            = document.createElement('template');
 
-      element.innerHTML = locationTabContent.outerHTML
-        .replace(/%ACTIVE%/g, active)
-        .replace(/%GROUP%/g, group)
-        .replace(/%FIRST%/g, first.toString())
-        .trim();
+      element.innerHTML = locationTabContent.outerHTML.replace(/%ACTIVE%/g, active)
+                              .replace(/%GROUP%/g, group)
+                              .replace(/%FIRST%/g, first.toString())
+                              .trim();
 
       locationsTab.appendChild(element.content);
 
@@ -89,11 +86,10 @@ class FlyToLocationsApi extends IApi {
 
       const tabContent = CosmoScout.gui.loadTemplateContent('location-tab-pane');
 
-      element.innerHTML = tabContent.outerHTML
-        .replace(/%SHOW%/g, show)
-        .replace(/%ACTIVE%/g, active)
-        .replace(/%GROUP%/g, group)
-        .trim();
+      element.innerHTML = tabContent.outerHTML.replace(/%SHOW%/g, show)
+                              .replace(/%ACTIVE%/g, active)
+                              .replace(/%GROUP%/g, group)
+                              .trim();
 
       tabContents.appendChild(element.content);
 
@@ -102,9 +98,7 @@ class FlyToLocationsApi extends IApi {
 
     const groupTabContent = CosmoScout.gui.loadTemplateContent('location-group');
 
-    groupTabContent.innerHTML = groupTabContent.innerHTML
-      .replace(/%TEXT%/g, text)
-      .trim();
+    groupTabContent.innerHTML = groupTabContent.innerHTML.replace(/%TEXT%/g, text).trim();
 
     groupTab.appendChild(groupTabContent);
 
