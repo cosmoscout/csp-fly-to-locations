@@ -110,8 +110,8 @@ void Plugin::init() {
         }
       });
 
-  mGuiManager->getGui()->registerCallback(
-      "flyToLocations.flyTo", std::function([this](std::string&& name) {
+  mGuiManager->getGui()->registerCallback("flyToLocations.flyTo",
+      "Fly the observer to the given bookmark.", std::function([this](std::string&& name) {
         if (!mSolarSystem->pActiveBody.get()) {
           return;
         }
