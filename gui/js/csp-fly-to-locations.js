@@ -3,25 +3,21 @@
 /**
  * FlyTo Api
  */
-class FlyToApi extends IApi {
+class FlyToLocationsApi extends IApi {
   /**
    * @inheritDoc
    * @type {string}
    */
-  name = 'flyto';
+  name = 'flyToLocations';
 
   flyTo(planet, location, time) {
     if (typeof location === 'undefined') {
-      CosmoScout.callNative('fly_to', planet);
+      CosmoScout.callbacks.flyToLocations.flyTo(planet);
     } else {
-      CosmoScout.callNative('fly_to', planet, location.longitude, location.latitude, location.height, time);
+      CosmoScout.callbacks.flyToLocations.flyTo(planet, location.longitude, location.latitude, location.height, time);
     }
 
-    CosmoScout.notifications.printNotification('Traveling', `to ${planet}`, 'send');
-  }
-
-  setCelestialBody(name) {
-    CosmoScout.callNative('set_celestial_body', name);
+    CosmoScout.notifications.print('Traveling', `to ${planet}`, 'send');
   }
 
   /**
@@ -31,18 +27,18 @@ class FlyToApi extends IApi {
    * @param icon {string}
    */
   addCelestialBody(name, icon) {
-    const button = CosmoScout.loadTemplateContent('celestial-body');
+    const button = CosmoScout.gui.loadTemplateContent('celestial-body');
     if (button === false) {
       return;
     }
 
     button.innerHTML = button.innerHTML
-      .replace(this.regex('NAME'), name)
-      .replace(this.regex('ICON'), icon)
+      .replace(/%NAME%/g, name)
+      .replace(/%ICON%/g, icon)
       .trim();
 
     button.addEventListener('click', () => {
-      CosmoScout.callNative('set_celestial_body', name);
+      CosmoScout.callbacks.navigation.setCelestialBody(name);
     });
 
     const area = document.getElementById('celestial-bodies');
@@ -67,7 +63,7 @@ class FlyToApi extends IApi {
 
     if (tabArea.childNodes.length === 0) {
       first = true;
-      tabArea.appendChild(CosmoScout.loadTemplateContent('location-tab'));
+      tabArea.appendChild(CosmoScout.gui.loadTemplateContent('location-tab'));
     }
 
     const locationsTab = document.getElementById('location-tabs');
@@ -78,25 +74,25 @@ class FlyToApi extends IApi {
     if (groupTab === null) {
       const active = first ? 'active' : '';
 
-      const locationTabContent = CosmoScout.loadTemplateContent('location-tab-link');
+      const locationTabContent = CosmoScout.gui.loadTemplateContent('location-tab-link');
       const element = document.createElement('template');
 
       element.innerHTML = locationTabContent.outerHTML
-        .replace(this.regex('ACTIVE'), active)
-        .replace(this.regex('GROUP'), group)
-        .replace(this.regex('FIRST'), first.toString())
+        .replace(/%ACTIVE%/g, active)
+        .replace(/%GROUP%/g, group)
+        .replace(/%FIRST%/g, first.toString())
         .trim();
 
       locationsTab.appendChild(element.content);
 
       const show = first ? 'show' : '';
 
-      const tabContent = CosmoScout.loadTemplateContent('location-tab-pane');
+      const tabContent = CosmoScout.gui.loadTemplateContent('location-tab-pane');
 
       element.innerHTML = tabContent.outerHTML
-        .replace(this.regex('SHOW'), show)
-        .replace(this.regex('ACTIVE'), active)
-        .replace(this.regex('GROUP'), group)
+        .replace(/%SHOW%/g, show)
+        .replace(/%ACTIVE%/g, active)
+        .replace(/%GROUP%/g, group)
         .trim();
 
       tabContents.appendChild(element.content);
@@ -104,19 +100,18 @@ class FlyToApi extends IApi {
       groupTab = document.getElementById(`nav-${group}`);
     }
 
-    const groupTabContent = CosmoScout.loadTemplateContent('location-group');
+    const groupTabContent = CosmoScout.gui.loadTemplateContent('location-group');
 
     groupTabContent.innerHTML = groupTabContent.innerHTML
-      .replace(this.regex('TEXT'), text)
+      .replace(/%TEXT%/g, text)
       .trim();
 
     groupTab.appendChild(groupTabContent);
 
-    CosmoScout.initTooltips();
-    CosmoScout.initDataCalls();
+    CosmoScout.gui.initTooltips();
   }
 }
 
 (() => {
-  CosmoScout.init(FlyToApi);
+  CosmoScout.init(FlyToLocationsApi);
 })();
