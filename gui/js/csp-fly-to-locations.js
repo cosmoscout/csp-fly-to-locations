@@ -36,7 +36,7 @@ class FlyToLocationsApi extends IApi {
     button.innerHTML = button.innerHTML.replace(/%NAME%/g, name).replace(/%ICON%/g, icon).trim();
 
     button.addEventListener('click', () => {
-      CosmoScout.callbacks.navigation.setCelestialBody(name);
+      CosmoScout.callbacks.navigation.setBody(name);
     });
 
     const area = document.getElementById('celestial-bodies');
