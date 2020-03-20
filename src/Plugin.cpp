@@ -92,7 +92,7 @@ void Plugin::init() {
         anchor->second.mCenter, settings.second.mIcon);
   }
 
-  mActiveBodyConnection = mSolarSystem->pActiveBody.onChange().connect(
+  mActiveBodyConnection = mSolarSystem->pActiveBody.connectAndTouch(
       [this](std::shared_ptr<cs::scene::CelestialBody> const& body) {
         mGuiManager->getGui()->callJavascript("CosmoScout.gui.clearHtml", "location-tabs-area");
 
@@ -141,11 +141,14 @@ void Plugin::init() {
 void Plugin::deInit() {
   spdlog::info("Unloading plugin...");
 
+  mGuiManager->removePluginTab("Navigation");
+
   mGuiManager->getGui()->unregisterCallback("flyToLocations.flyTo");
-  mSolarSystem->pActiveBody.onChange().disconnect(mActiveBodyConnection);
   mGuiManager->getGui()->callJavascript("CosmoScout.gui.unregisterHtml", "fly-to-locations");
   mGuiManager->getGui()->callJavascript(
       "CosmoScout.gui.unregisterCss", "css/csp-fly-to-locations.css");
+
+  mSolarSystem->pActiveBody.disconnect(mActiveBodyConnection);
 
   spdlog::info("Unloading done.");
 }
