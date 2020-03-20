@@ -39,8 +39,11 @@ class Plugin : public cs::core::PluginBase {
 
     /// Settings for a single target.
     struct Target {
-      std::string                     mIcon;      ///< The path to an icon for the target.
-      std::map<std::string, Location> mLocations; ///< All the locations belonging to the target.
+      /// The path to an icon for the target.
+      std::string mIcon;
+
+      /// All the locations belonging to the target.
+      std::optional<std::map<std::string, Location>> mLocations;
     };
 
     std::map<std::string, Target> mTargets;

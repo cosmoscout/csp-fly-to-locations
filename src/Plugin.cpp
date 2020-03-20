@@ -30,30 +30,40 @@ namespace csp::flytolocations {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void from_json(const nlohmann::json& j, Plugin::Settings::Location& o) {
-  o.mLatitude  = cs::core::parseProperty<double>("latitude", j);
-  o.mLongitude = cs::core::parseProperty<double>("longitude", j);
-  o.mExtent    = cs::core::parseProperty<double>("extent", j);
-  o.mGroup     = cs::core::parseProperty<std::string>("group", j);
+void from_json(nlohmann::json const& j, Plugin::Settings::Location& o) {
+  cs::core::Settings::deserialize(j, "latitude", o.mLatitude);
+  cs::core::Settings::deserialize(j, "longitude", o.mLongitude);
+  cs::core::Settings::deserialize(j, "extent", o.mExtent);
+  cs::core::Settings::deserialize(j, "group", o.mGroup);
+}
+
+void to_json(nlohmann::json& j, Plugin::Settings::Location const& o) {
+  cs::core::Settings::serialize(j, "latitude", o.mLatitude);
+  cs::core::Settings::serialize(j, "longitude", o.mLongitude);
+  cs::core::Settings::serialize(j, "extent", o.mExtent);
+  cs::core::Settings::serialize(j, "group", o.mGroup);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void from_json(const nlohmann::json& j, Plugin::Settings::Target& o) {
-  o.mIcon = cs::core::parseProperty<std::string>("icon", j);
+void from_json(nlohmann::json const& j, Plugin::Settings::Target& o) {
+  cs::core::Settings::deserialize(j, "icon", o.mIcon);
+  cs::core::Settings::deserialize(j, "locations", o.mLocations);
+}
 
-  auto iter = j.find("locations");
-  if (iter != j.end()) {
-    o.mLocations = cs::core::parseMap<std::string, Plugin::Settings::Location>("locations", j);
-  }
+void to_json(nlohmann::json& j, Plugin::Settings::Target const& o) {
+  cs::core::Settings::serialize(j, "icon", o.mIcon);
+  cs::core::Settings::serialize(j, "locations", o.mLocations);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void from_json(const nlohmann::json& j, Plugin::Settings& o) {
-  cs::core::parseSection("csp-atmospheres", [&] {
-    o.mTargets = cs::core::parseMap<std::string, Plugin::Settings::Target>("targets", j);
-  });
+void from_json(nlohmann::json const& j, Plugin::Settings& o) {
+  cs::core::Settings::deserialize(j, "targets", o.mTargets);
+}
+
+void to_json(nlohmann::json& j, Plugin::Settings const& o) {
+  cs::core::Settings::serialize(j, "targets", o.mTargets);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,9 +112,11 @@ void Plugin::init() {
           if (planet != mPluginSettings.mTargets.end()) {
             auto const& locations = planet->second.mLocations;
 
-            for (auto loc : locations) {
-              mGuiManager->getGui()->callJavascript(
-                  "CosmoScout.flyToLocations.addLocation", loc.second.mGroup, loc.first);
+            if (locations) {
+              for (auto loc : locations.value()) {
+                mGuiManager->getGui()->callJavascript(
+                    "CosmoScout.flyToLocations.addLocation", loc.second.mGroup, loc.first);
+              }
             }
           }
         }
@@ -118,9 +130,10 @@ void Plugin::init() {
 
         for (auto const& planet : mPluginSettings.mTargets) {
           auto anchor = mAllSettings->mAnchors.find(planet.first);
-          if (anchor->second.mCenter == mSolarSystem->pActiveBody.get()->getCenterName()) {
-            auto const& location = planet.second.mLocations.find(name);
-            if (location != planet.second.mLocations.end()) {
+          if (anchor->second.mCenter == mSolarSystem->pActiveBody.get()->getCenterName() &&
+              planet.second.mLocations) {
+            auto const& location = planet.second.mLocations.value().find(name);
+            if (location != planet.second.mLocations.value().end()) {
               glm::dvec2 lngLat(location->second.mLongitude, location->second.mLatitude);
               lngLat        = cs::utils::convert::toRadians(lngLat);
               double height = mSolarSystem->pActiveBody.get()->getHeight(lngLat);
