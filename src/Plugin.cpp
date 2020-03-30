@@ -102,7 +102,7 @@ void Plugin::init() {
           if (planet != mPluginSettings.mTargets.end()) {
             auto const& locations = planet->second.mLocations;
 
-            for (auto loc : locations) {
+            for (const auto& loc : locations) {
               mGuiManager->getGui()->callJavascript(
                   "CosmoScout.flyToLocations.addLocation", loc.second.mGroup, loc.first);
             }
