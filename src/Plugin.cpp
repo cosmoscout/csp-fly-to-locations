@@ -21,7 +21,7 @@ EXPORT_FN cs::core::PluginBase* create() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 EXPORT_FN void destroy(cs::core::PluginBase* pluginBase) {
-  delete pluginBase;
+  delete pluginBase; // NOLINT(cppcoreguidelines-owning-memory)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ void Plugin::init() {
           if (planet != mPluginSettings.mTargets.end()) {
             auto const& locations = planet->second.mLocations;
 
-            for (auto loc : locations) {
+            for (auto const& loc : locations) {
               mGuiManager->getGui()->callJavascript(
                   "CosmoScout.flyToLocations.addLocation", loc.second.mGroup, loc.first);
             }
