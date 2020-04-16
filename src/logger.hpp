@@ -13,7 +13,7 @@ namespace csp::flytolocations {
 
 /// This creates the default singleton logger for "csp-flytolocations" when called for the first
 /// time and returns it. See cs-utils/logger.hpp for more logging details.
-std::shared_ptr<spdlog::logger> logger();
+spdlog::logger& logger();
 
 } // namespace csp::flytolocations
 
