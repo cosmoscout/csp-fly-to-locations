@@ -49,8 +49,6 @@ class Plugin : public cs::core::PluginBase {
     std::map<std::string, Target> mTargets;
   };
 
-  Plugin();
-
   void init() override;
   void deInit() override;
 

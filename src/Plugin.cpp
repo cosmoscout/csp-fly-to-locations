@@ -11,6 +11,7 @@
 #include "../../../src/cs-core/SolarSystem.hpp"
 #include "../../../src/cs-utils/convert.hpp"
 #include "../../../src/cs-utils/logger.hpp"
+#include "logger.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -21,7 +22,7 @@ EXPORT_FN cs::core::PluginBase* create() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 EXPORT_FN void destroy(cs::core::PluginBase* pluginBase) {
-  delete pluginBase;
+  delete pluginBase; // NOLINT(cppcoreguidelines-owning-memory)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,16 +69,9 @@ void to_json(nlohmann::json& j, Plugin::Settings const& o) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Plugin::Plugin() {
-  // Create default logger for this plugin.
-  spdlog::set_default_logger(cs::utils::logger::createLogger("csp-fly-to-locations"));
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
 void Plugin::init() {
 
-  spdlog::info("Loading plugin...");
+  logger().info("Loading plugin...");
 
   mPluginSettings = mAllSettings->mPlugins.at("csp-fly-to-locations");
 
@@ -113,7 +107,7 @@ void Plugin::init() {
             auto const& locations = planet->second.mLocations;
 
             if (locations) {
-              for (auto loc : locations.value()) {
+              for (auto const& loc : locations.value()) {
                 mGuiManager->getGui()->callJavascript(
                     "CosmoScout.flyToLocations.addLocation", loc.second.mGroup, loc.first);
               }
@@ -146,13 +140,13 @@ void Plugin::init() {
         }
       }));
 
-  spdlog::info("Loading done.");
+  logger().info("Loading done.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Plugin::deInit() {
-  spdlog::info("Unloading plugin...");
+  logger().info("Unloading plugin...");
 
   mGuiManager->removePluginTab("Navigation");
 
@@ -163,7 +157,7 @@ void Plugin::deInit() {
 
   mSolarSystem->pActiveBody.disconnect(mActiveBodyConnection);
 
-  spdlog::info("Unloading done.");
+  logger().info("Unloading done.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
