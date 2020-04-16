@@ -10,6 +10,7 @@
 #include "../../../src/cs-core/PluginBase.hpp"
 
 #include <map>
+#include <optional>
 #include <string>
 #include <vector>
 
