@@ -7,10 +7,7 @@
 #include "Plugin.hpp"
 
 #include "../../../src/cs-core/GuiManager.hpp"
-//#include "../../../src/cs-core/InputManager.hpp"
 #include "../../../src/cs-core/SolarSystem.hpp"
-//#include "../../../src/cs-utils/convert.hpp"
-//#include "../../../src/cs-utils/logger.hpp"
 #include "logger.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,12 +49,12 @@ void Plugin::init() {
 
   // Remove deleted bookmarks.
   mOnBookmarkRemovedConnection = mGuiManager->onBookmarkRemoved().connect(
-      [this](uint32_t bookmarkID, cs::core::Settings::Bookmark const& bookmark) {
+      [this](uint32_t bookmarkID, cs::core::Settings::Bookmark const& /*bookmark*/) {
         mGuiManager->getGui()->callJavascript(
             "CosmoScout.flyToLocations.removeBookmark", bookmarkID);
       });
 
-  // Update bookmark-list if active body cahnges.
+  // Update bookmark-list if active body changes.
   mActiveBodyConnection = mSolarSystem->pActiveBody.connectAndTouch(
       [this](std::shared_ptr<cs::scene::CelestialBody> const& body) {
         mGuiManager->getGui()->callJavascript(
@@ -65,11 +62,11 @@ void Plugin::init() {
 
         // Add all list-bookmarks for this body.
         if (body) {
-          for (auto const& bookmark : mGuiManager->getBookmarks()) {
-            if (bookmark.second.mLocation && bookmark.second.mLocation.value().mPosition) {
-              if (body->getCenterName() == bookmark.second.mLocation.value().mCenter) {
+          for (auto const& [id, bookmark] : mGuiManager->getBookmarks()) {
+            if (bookmark.mLocation && bookmark.mLocation.value().mPosition) {
+              if (body->getCenterName() == bookmark.mLocation.value().mCenter) {
                 mGuiManager->getGui()->callJavascript("CosmoScout.flyToLocations.addListBookmark",
-                    bookmark.first, bookmark.second.mName, bookmark.second.mTime.has_value());
+                    id, bookmark.mName, bookmark.mTime.has_value());
               }
             }
           }
@@ -108,7 +105,7 @@ void Plugin::deInit() {
 void Plugin::onAddBookmark(uint32_t bookmarkID, cs::core::Settings::Bookmark const& bookmark) {
   // We only show bookmarks with locations.
   if (bookmark.mLocation) {
-    if (bookmark.mIcon && bookmark.mIcon.value() != "") {
+    if (bookmark.mIcon && !bookmark.mIcon.value().empty()) {
       // Add as grid-bookmark if it has an icon.
       mGuiManager->getGui()->callJavascript("CosmoScout.flyToLocations.addGridBookmark", bookmarkID,
           bookmark.mName, bookmark.mIcon.value());

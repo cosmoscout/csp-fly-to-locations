@@ -19,7 +19,7 @@ namespace csp::flytolocations {
 
 /// This is a very simple plugin with no configuration options. It just shows the bookmarks in the
 /// sidebar. It will only show bookmarks which have an associated location. Bookmarks which have an
-/// icon and only a center & frame will be shown in as a grid of buttons. Bookmarks which have an
+/// icon and only a center & frame will be shown in a grid of buttons. Bookmarks which have an
 /// additional position will be shown in a list when a body with the same center name is currently
 /// active.
 class Plugin : public cs::core::PluginBase {
