@@ -7,10 +7,10 @@
 #include "Plugin.hpp"
 
 #include "../../../src/cs-core/GuiManager.hpp"
-#include "../../../src/cs-core/InputManager.hpp"
+//#include "../../../src/cs-core/InputManager.hpp"
 #include "../../../src/cs-core/SolarSystem.hpp"
-#include "../../../src/cs-utils/convert.hpp"
-#include "../../../src/cs-utils/logger.hpp"
+//#include "../../../src/cs-utils/convert.hpp"
+//#include "../../../src/cs-utils/logger.hpp"
 #include "logger.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,49 +31,9 @@ namespace csp::flytolocations {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void from_json(nlohmann::json const& j, Plugin::Settings::Location& o) {
-  cs::core::Settings::deserialize(j, "latitude", o.mLatitude);
-  cs::core::Settings::deserialize(j, "longitude", o.mLongitude);
-  cs::core::Settings::deserialize(j, "extent", o.mExtent);
-  cs::core::Settings::deserialize(j, "group", o.mGroup);
-}
-
-void to_json(nlohmann::json& j, Plugin::Settings::Location const& o) {
-  cs::core::Settings::serialize(j, "latitude", o.mLatitude);
-  cs::core::Settings::serialize(j, "longitude", o.mLongitude);
-  cs::core::Settings::serialize(j, "extent", o.mExtent);
-  cs::core::Settings::serialize(j, "group", o.mGroup);
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void from_json(nlohmann::json const& j, Plugin::Settings::Target& o) {
-  cs::core::Settings::deserialize(j, "icon", o.mIcon);
-  cs::core::Settings::deserialize(j, "locations", o.mLocations);
-}
-
-void to_json(nlohmann::json& j, Plugin::Settings::Target const& o) {
-  cs::core::Settings::serialize(j, "icon", o.mIcon);
-  cs::core::Settings::serialize(j, "locations", o.mLocations);
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void from_json(nlohmann::json const& j, Plugin::Settings& o) {
-  cs::core::Settings::deserialize(j, "targets", o.mTargets);
-}
-
-void to_json(nlohmann::json& j, Plugin::Settings const& o) {
-  cs::core::Settings::serialize(j, "targets", o.mTargets);
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
 void Plugin::init() {
 
   logger().info("Loading plugin...");
-
-  mPluginSettings = mAllSettings->mPlugins.at("csp-fly-to-locations");
 
   mGuiManager->addHtmlToGui(
       "fly-to-locations", "../share/resources/gui/fly-to-locations-templates.html");
@@ -84,61 +44,42 @@ void Plugin::init() {
   mGuiManager->addPluginTabToSideBarFromHTML(
       "Navigation", "location_on", "../share/resources/gui/fly-to-locations-tab.html");
 
-  for (auto const& settings : mPluginSettings.mTargets) {
-    auto anchor = mAllSettings->mAnchors.find(settings.first);
+  // Add newly created bookmarks.
+  mOnBookmarkAddedConnection = mGuiManager->onBookmarkAdded().connect(
+      [this](uint32_t bookmarkID, cs::core::Settings::Bookmark const& bookmark) {
+        onAddBookmark(bookmarkID, bookmark);
+      });
 
-    if (anchor == mAllSettings->mAnchors.end()) {
-      throw std::runtime_error(
-          "There is no Anchor \"" + settings.first + "\" defined in the settings.");
-    }
+  // Remove deleted bookmarks.
+  mOnBookmarkRemovedConnection = mGuiManager->onBookmarkRemoved().connect(
+      [this](uint32_t bookmarkID, cs::core::Settings::Bookmark const& bookmark) {
+        mGuiManager->getGui()->callJavascript(
+            "CosmoScout.flyToLocations.removeBookmark", bookmarkID);
+      });
 
-    mGuiManager->getGui()->callJavascript("CosmoScout.flyToLocations.addCelestialBody",
-        anchor->second.mCenter, settings.second.mIcon);
-  }
-
+  // Update bookmark-list if active body cahnges.
   mActiveBodyConnection = mSolarSystem->pActiveBody.connectAndTouch(
       [this](std::shared_ptr<cs::scene::CelestialBody> const& body) {
-        mGuiManager->getGui()->callJavascript("CosmoScout.gui.clearHtml", "location-tabs-area");
+        mGuiManager->getGui()->callJavascript(
+            "CosmoScout.gui.clearHtml", "flytolocations-bookmarks-list");
 
+        // Add all list-bookmarks for this body.
         if (body) {
-          auto const& planet = mPluginSettings.mTargets.find(body->getCenterName());
-
-          if (planet != mPluginSettings.mTargets.end()) {
-            auto const& locations = planet->second.mLocations;
-
-            if (locations) {
-              for (auto const& loc : locations.value()) {
-                mGuiManager->getGui()->callJavascript(
-                    "CosmoScout.flyToLocations.addLocation", loc.second.mGroup, loc.first);
+          for (auto const& bookmark : mGuiManager->getBookmarks()) {
+            if (bookmark.second.mLocation && bookmark.second.mLocation.value().mPosition) {
+              if (body->getCenterName() == bookmark.second.mLocation.value().mCenter) {
+                mGuiManager->getGui()->callJavascript("CosmoScout.flyToLocations.addListBookmark",
+                    bookmark.first, bookmark.second.mName, bookmark.second.mTime.has_value());
               }
             }
           }
         }
       });
 
-  mGuiManager->getGui()->registerCallback("flyToLocations.flyTo",
-      "Fly the observer to the given bookmark.", std::function([this](std::string&& name) {
-        if (!mSolarSystem->pActiveBody.get()) {
-          return;
-        }
-
-        for (auto const& planet : mPluginSettings.mTargets) {
-          auto anchor = mAllSettings->mAnchors.find(planet.first);
-          if (anchor->second.mCenter == mSolarSystem->pActiveBody.get()->getCenterName() &&
-              planet.second.mLocations) {
-            auto const& location = planet.second.mLocations.value().find(name);
-            if (location != planet.second.mLocations.value().end()) {
-              glm::dvec2 lngLat(location->second.mLongitude, location->second.mLatitude);
-              lngLat        = cs::utils::convert::toRadians(lngLat);
-              double height = mSolarSystem->pActiveBody.get()->getHeight(lngLat);
-              mSolarSystem->flyObserverTo(mSolarSystem->pActiveBody.get()->getCenterName(),
-                  mSolarSystem->pActiveBody.get()->getFrameName(), lngLat,
-                  location->second.mExtent + height, 5.0);
-              mGuiManager->showNotification("Travelling", "to " + location->first, "send");
-            }
-          }
-        }
-      }));
+  // Add all initial bookmarks.
+  for (auto const& bookmark : mGuiManager->getBookmarks()) {
+    onAddBookmark(bookmark.first, bookmark.second);
+  }
 
   logger().info("Loading done.");
 }
@@ -150,7 +91,9 @@ void Plugin::deInit() {
 
   mGuiManager->removePluginTab("Navigation");
 
-  mGuiManager->getGui()->unregisterCallback("flyToLocations.flyTo");
+  mGuiManager->onBookmarkAdded().disconnect(mOnBookmarkAddedConnection);
+  mGuiManager->onBookmarkRemoved().disconnect(mOnBookmarkRemovedConnection);
+
   mGuiManager->getGui()->callJavascript("CosmoScout.gui.unregisterHtml", "fly-to-locations");
   mGuiManager->getGui()->callJavascript(
       "CosmoScout.gui.unregisterCss", "css/csp-fly-to-locations.css");
@@ -158,6 +101,26 @@ void Plugin::deInit() {
   mSolarSystem->pActiveBody.disconnect(mActiveBodyConnection);
 
   logger().info("Unloading done.");
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Plugin::onAddBookmark(uint32_t bookmarkID, cs::core::Settings::Bookmark const& bookmark) {
+
+  if (bookmark.mLocation && bookmark.mLocation.value().mPosition) {
+    // Add as list-bookmark if it has a concrete position and shares the SPICE center with the
+    // currently active body.
+    if (mSolarSystem->pActiveBody.get() != nullptr &&
+        mSolarSystem->pActiveBody.get()->getCenterName() == bookmark.mLocation.value().mCenter) {
+      mGuiManager->getGui()->callJavascript("CosmoScout.flyToLocations.addListBookmark", bookmarkID,
+          bookmark.mName, bookmark.mTime.has_value());
+    }
+
+  } else if (bookmark.mLocation && bookmark.mIcon) {
+    // Add as grid-bookmark if it has no concrete position and an icon.
+    mGuiManager->getGui()->callJavascript("CosmoScout.flyToLocations.addGridBookmark", bookmarkID,
+        bookmark.mName, bookmark.mIcon.value());
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

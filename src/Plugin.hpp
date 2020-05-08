@@ -8,6 +8,7 @@
 #define CSP_FLY_TO_LOCATIONS_PLUGIN_HPP
 
 #include "../../../src/cs-core/PluginBase.hpp"
+#include "../../../src/cs-core/Settings.hpp"
 
 #include <map>
 #include <optional>
@@ -16,47 +17,21 @@
 
 namespace csp::flytolocations {
 
-/// This plugin enables the user to travel to different locations within the solar system. The
-/// locations are organized in a flat hierarchy. There are targets, which can be any anchor in
-/// the solar system and there are locations, which are places belonging to a target. The
-/// locations can be organized into groups.
-///
-/// As an example the Earth can be a target. New York, Berlin and Hannover can be locations in
-/// the "Cities" group belonging to the target Earth.
-///
-/// The configuration of this plugin is done via the provided json config.
-/// See README.md for details.
+/// This is a very simple plugin with no configuration options. It just shows the bookmarks in the
+/// sidebar. It will only show bookmarks which have an associated location. Bookmarks which have an
+/// icon and only a center & frame will be shown in as a grid of buttons. Bookmarks which have an
+/// additional position will be shown in a list when a body with the same center name is currently
+/// active.
 class Plugin : public cs::core::PluginBase {
  public:
-  struct Settings {
-
-    /// Settings for a location within a target.
-    struct Location {
-      double      mLatitude;  ///< The latitude of the location.
-      double      mLongitude; ///< The longitude of the location.
-      double      mExtent;    ///< The location size in meters.
-      std::string mGroup;     ///< The name of the group the location belongs to.
-    };
-
-    /// Settings for a single target.
-    struct Target {
-      /// The path to an icon for the target.
-      std::string mIcon;
-
-      /// All the locations belonging to the target.
-      std::optional<std::map<std::string, Location>> mLocations;
-    };
-
-    std::map<std::string, Target> mTargets;
-  };
-
   void init() override;
   void deInit() override;
 
  private:
-  Settings mPluginSettings;
-
-  int mActiveBodyConnection = -1;
+  void onAddBookmark(uint32_t bookmarkID, cs::core::Settings::Bookmark const& bookmark);
+  int  mActiveBodyConnection        = -1;
+  int  mOnBookmarkAddedConnection   = -1;
+  int  mOnBookmarkRemovedConnection = -1;
 };
 
 } // namespace csp::flytolocations
