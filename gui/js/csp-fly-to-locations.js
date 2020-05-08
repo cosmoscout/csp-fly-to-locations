@@ -61,7 +61,10 @@
      * @param text {string}
      */
     removeBookmark(bookmarkID) {
-      document.querySelector("#flytolocations-bookmark-" + bookmarkID).remove();
+      let bookmark = document.querySelector("#flytolocations-bookmark-" + bookmarkID);
+      if (bookmark) {
+        bookmark.remove();
+      }
     }
 
     /**
