@@ -42,7 +42,7 @@ void Plugin::init() {
   mGuiManager->addCssToGui("css/csp-fly-to-locations.css");
 
   mGuiManager->addPluginTabToSideBarFromHTML(
-      "Navigation", "location_on", "../share/resources/gui/fly-to-locations-tab.html");
+      "Bookmarks", "place", "../share/resources/gui/fly-to-locations-tab.html");
 
   // Add newly created bookmarks.
   mOnBookmarkAddedConnection = mGuiManager->onBookmarkAdded().connect(
@@ -89,7 +89,7 @@ void Plugin::init() {
 void Plugin::deInit() {
   logger().info("Unloading plugin...");
 
-  mGuiManager->removePluginTab("Navigation");
+  mGuiManager->removePluginTab("Bookmarks");
 
   mGuiManager->onBookmarkAdded().disconnect(mOnBookmarkAddedConnection);
   mGuiManager->onBookmarkRemoved().disconnect(mOnBookmarkRemovedConnection);
@@ -106,20 +106,20 @@ void Plugin::deInit() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Plugin::onAddBookmark(uint32_t bookmarkID, cs::core::Settings::Bookmark const& bookmark) {
-
-  if (bookmark.mLocation && bookmark.mLocation.value().mPosition) {
-    // Add as list-bookmark if it has a concrete position and shares the SPICE center with the
-    // currently active body.
-    if (mSolarSystem->pActiveBody.get() != nullptr &&
-        mSolarSystem->pActiveBody.get()->getCenterName() == bookmark.mLocation.value().mCenter) {
-      mGuiManager->getGui()->callJavascript("CosmoScout.flyToLocations.addListBookmark", bookmarkID,
-          bookmark.mName, bookmark.mTime.has_value());
+  // We only show bookmarks with locations.
+  if (bookmark.mLocation) {
+    if (bookmark.mIcon && bookmark.mIcon.value() != "") {
+      // Add as grid-bookmark if it has an icon.
+      mGuiManager->getGui()->callJavascript("CosmoScout.flyToLocations.addGridBookmark", bookmarkID,
+          bookmark.mName, bookmark.mIcon.value());
+    } else {
+      // Add all other bookmars to the list, if they are relevant for the current body.
+      if (mSolarSystem->pActiveBody.get() != nullptr &&
+          mSolarSystem->pActiveBody.get()->getCenterName() == bookmark.mLocation.value().mCenter) {
+        mGuiManager->getGui()->callJavascript("CosmoScout.flyToLocations.addListBookmark",
+            bookmarkID, bookmark.mName, bookmark.mTime.has_value());
+      }
     }
-
-  } else if (bookmark.mLocation && bookmark.mIcon) {
-    // Add as grid-bookmark if it has no concrete position and an icon.
-    mGuiManager->getGui()->callJavascript("CosmoScout.flyToLocations.addGridBookmark", bookmarkID,
-        bookmark.mName, bookmark.mIcon.value());
   }
 }
 
