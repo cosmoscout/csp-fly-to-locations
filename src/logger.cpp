@@ -13,7 +13,7 @@ namespace csp::flytolocations {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 spdlog::logger& logger() {
-  static auto logger = cs::utils::createLogger("csp-flytolocations");
+  static auto logger = cs::utils::createLogger("csp-fly-to-locations");
   return *logger;
 }
 

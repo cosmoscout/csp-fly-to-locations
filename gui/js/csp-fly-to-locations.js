@@ -11,99 +11,78 @@
      */
     name = 'flyToLocations';
 
-    flyTo(planet, location, time) {
-      if (typeof location === 'undefined') {
-        CosmoScout.callbacks.flyToLocations.flyTo(planet);
-      } else {
-        CosmoScout.callbacks.flyToLocations.flyTo(
-            planet, location.longitude, location.latitude, location.height, time);
-      }
-
-      CosmoScout.notifications.print('Traveling', `to ${planet}`, 'send');
-    }
-
     /**
-     * Adds a celestial body button to #celestial-bodies
+     * Adds a bookmark button to the grid of icon bookmarks.
      *
-     * @param name {string}
-     * @param icon {string}
+     * @param bookmarkID {number}
+     * @param bookmarkName {string}
+     * @param bookmarkIcon {string}
      */
-    addCelestialBody(name, icon) {
-      const button = CosmoScout.gui.loadTemplateContent('celestial-body');
-      if (button === false) {
-        return;
-      }
+    addGridBookmark(bookmarkID, bookmarkName, bookmarkIcon) {
+      let button       = CosmoScout.gui.loadTemplateContent('flytolocations-bookmarks-grid-button');
+      button.innerHTML = button.innerHTML.replace(/%NAME%/g, bookmarkName)
+                             .replace(/%ICON%/g, bookmarkIcon)
+                             .replace(/%ID%/g, bookmarkID)
+                             .trim();
+      button.id = `flytolocations-bookmark-${bookmarkID}`;
+      document.getElementById('flytolocations-bookmarks-grid').appendChild(button);
 
-      button.innerHTML = button.innerHTML.replace(/%NAME%/g, name).replace(/%ICON%/g, icon).trim();
-
-      button.addEventListener('click', () => {
-        CosmoScout.callbacks.navigation.setBody(name);
-      });
-
-      const area = document.getElementById('celestial-bodies');
-
-      if (area === null) {
-        console.error("'#celestial-bodies' not found.");
-        return;
-      }
-
-      area.appendChild(button);
+      this._sortBookmarks(document.getElementById('flytolocations-bookmarks-grid'));
     }
 
     /**
-     * csp-fly-to-locations
+     * Adds a bookmark button to the list of position bookmarks.
+     *
+     * @param bookmarkID {number}
+     * @param bookmarkName {string}
+     * @param bookmarkHasTime {boolean}
+     */
+    addListBookmark(bookmarkID, bookmarkName, bookmarkHasTime) {
+      let listItem = CosmoScout.gui.loadTemplateContent('flytolocations-bookmarks-list-item');
+      listItem.innerHTML =
+          listItem.innerHTML.replace(/%NAME%/g, bookmarkName).replace(/%ID%/g, bookmarkID).trim();
+      listItem.id = `flytolocations-bookmark-${bookmarkID}`;
+
+      if (!bookmarkHasTime) {
+        listItem.querySelector(".flytolocations-bookmarks-time-button").classList.add("hidden");
+      }
+
+      document.getElementById('flytolocations-bookmarks-list').appendChild(listItem);
+
+      CosmoScout.gui.initTooltips();
+
+      this._sortBookmarks(document.getElementById('flytolocations-bookmarks-list'));
+    }
+
+    /**
+     * Removes a bookmark by ID. It will be removed regardless in which bookmark areas it is.
      *
      * @param group {string}
      * @param text {string}
      */
-    addLocation(group, text) {
-      let first     = false;
-      const tabArea = document.getElementById('location-tabs-area');
-
-      if (tabArea.childNodes.length === 0) {
-        first = true;
-        tabArea.appendChild(CosmoScout.gui.loadTemplateContent('location-tab'));
+    removeBookmark(bookmarkID) {
+      let bookmark = document.querySelector("#flytolocations-bookmark-" + bookmarkID);
+      if (bookmark) {
+        bookmark.remove();
       }
+    }
 
-      const locationsTab = document.getElementById('location-tabs');
-      const tabContents  = document.getElementById('nav-tabContents');
-
-      let groupTab = document.getElementById(`nav-${group}`);
-
-      if (groupTab === null) {
-        const active = first ? 'active' : '';
-
-        const locationTabContent = CosmoScout.gui.loadTemplateContent('location-tab-link');
-        const element            = document.createElement('template');
-
-        element.innerHTML = locationTabContent.outerHTML.replace(/%ACTIVE%/g, active)
-                                .replace(/%GROUP%/g, group)
-                                .replace(/%FIRST%/g, first.toString())
-                                .trim();
-
-        locationsTab.appendChild(element.content);
-
-        const show = first ? 'show' : '';
-
-        const tabContent = CosmoScout.gui.loadTemplateContent('location-tab-pane');
-
-        element.innerHTML = tabContent.outerHTML.replace(/%SHOW%/g, show)
-                                .replace(/%ACTIVE%/g, active)
-                                .replace(/%GROUP%/g, group)
-                                .trim();
-
-        tabContents.appendChild(element.content);
-
-        groupTab = document.getElementById(`nav-${group}`);
-      }
-
-      const groupTabContent = CosmoScout.gui.loadTemplateContent('location-group');
-
-      groupTabContent.innerHTML = groupTabContent.innerHTML.replace(/%TEXT%/g, text).trim();
-
-      groupTab.appendChild(groupTabContent);
-
-      CosmoScout.gui.initTooltips();
+    /**
+     * Sorts the grid or list bookmarks alphabetically.
+     *
+     * @param container {HTMLElement} The element containing bookmark divs.
+     * @private
+     */
+    _sortBookmarks(container) {
+      Array.prototype.slice.call(container.children)
+          .sort((ea, eb) => {
+            let a = ea.querySelector(".flytolocations-bookmarks-name").textContent;
+            let b = eb.querySelector(".flytolocations-bookmarks-name").textContent;
+            return a < b ? -1 : (a > b ? 1 : 0);
+          })
+          .forEach((div) => {
+            container.appendChild(div);
+          });
     }
   }
 
