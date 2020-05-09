@@ -6,32 +6,14 @@ This is a default plugin of CosmoScout VR. Hence, any **issues should be reporte
 
 ## Configuration
 
-This plugin can be enabled with the following configuration in your `settings.json`:
+This plugin can be enabled with the following line in your `settings.json`:
 
 ```javascript
 {
   ...
   "plugins": {
     ...
-    "csp-fly-to-locations": {
-      "targets": {
-        <anchor name>: {
-          "icon": <path to icon>,
-          "locations": {              // optional
-            <location name>: {
-              "group":     <group name>,  // Locations with the same group will be put together.
-              "latitude":  <float>
-              "longitude": <float>
-              "extend":    <float>    // The approximate size of the location in meters. 
-                                      // The fly-to trajectory will try to show 
-                                      // the full location on screen.
-            },
-            ... <more locations> ...
-          }
-        },
-        ... <more targets> ...
-      }
-    }
+    "csp-fly-to-locations": {}
   }
 }
 ```
